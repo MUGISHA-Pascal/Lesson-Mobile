@@ -18,62 +18,6 @@ const Courses_1 = __importDefault(require("../models/Courses"));
 const Lessons_1 = __importDefault(require("../models/Lessons"));
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
-/**
- * @swagger
- * tags:
- *   name: Lessons
- *   description: Lesson management within courses
- */
-/**
- * @swagger
- * /lessons/add/{userId}:
- *   post:
- *     summary: Add a new lesson to a course (admin only)
- *     tags: [Lessons]
- *     parameters:
- *       - in: path
- *         name: userId
- *         schema:
- *           type: integer
- *         required: true
- *         description: ID of the user adding the lesson
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               title:
- *                 type: string
- *                 example: "Introduction to Node.js"
- *               course_id:
- *                 type: integer
- *                 example: 1
- *               content:
- *                 type: string
- *                 example: "This is the first lesson of the Node.js course."
- *               media_url:
- *                 type: string
- *                 example: "http://example.com/media/lesson1.mp4"
- *     responses:
- *       200:
- *         description: Lesson created successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "lesson created successfully"
- *                 lesson:
- *                   $ref: '#/components/schemas/Lesson'
- *       403:
- *         description: Not allowed to add lessons
- *       500:
- *         description: Server error
- */
 const lessonAdding = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userId } = req.params;
@@ -97,42 +41,6 @@ const lessonAdding = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.lessonAdding = lessonAdding;
-/**
- * @swagger
- * /lessons/:
- *   get:
- *     summary: Get lessons by course title or list all courses
- *     tags: [Lessons]
- *     requestBody:
- *       required: false
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               title:
- *                 type: string
- *                 example: "Node.js Basics"
- *     responses:
- *       200:
- *         description: Course(s) retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "course found"
- *                 courses:
- *                   type: array
- *                   items:
- *                     $ref: '#/components/schemas/Course'
- *       404:
- *         description: Course not found
- *       500:
- *         description: Server error
- */
 const getLesson = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (req.body.title) {
@@ -153,60 +61,6 @@ const getLesson = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getLesson = getLesson;
-/**
- * @swagger
- * /lessons/update/{userId}:
- *   put:
- *     summary: Update an existing lesson (admin only)
- *     tags: [Lessons]
- *     parameters:
- *       - in: path
- *         name: userId
- *         schema:
- *           type: integer
- *         required: true
- *         description: ID of the user updating the lesson
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               lessonId:
- *                 type: integer
- *                 example: 1
- *               title:
- *                 type: string
- *                 example: "Advanced Node.js"
- *               content:
- *                 type: string
- *                 example: "Updated content for the lesson."
- *               course_id:
- *                 type: integer
- *                 example: 1
- *               media_url:
- *                 type: string
- *                 example: "http://example.com/media/lesson1_updated.mp4"
- *     responses:
- *       200:
- *         description: Lesson updated successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "lesson updated successfully"
- *                 updatedLesson:
- *                   type: integer
- *                   example: 1
- *       403:
- *         description: Not allowed to update lessons
- *       500:
- *         description: Server error
- */
 const lessonUpdate = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userId } = req.params;
@@ -227,48 +81,6 @@ const lessonUpdate = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.lessonUpdate = lessonUpdate;
-/**
- * @swagger
- * /lessons/delete/{userId}:
- *   delete:
- *     summary: Delete a lesson from a course (admin only)
- *     tags: [Lessons]
- *     parameters:
- *       - in: path
- *         name: userId
- *         schema:
- *           type: integer
- *         required: true
- *         description: ID of the user deleting the lesson
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               lessonId:
- *                 type: integer
- *                 example: 1
- *     responses:
- *       200:
- *         description: Lesson deleted successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "lesson deleted successfully"
- *                 deletedLesson:
- *                   type: integer
- *                   example: 1
- *       403:
- *         description: Not allowed to delete lessons
- *       500:
- *         description: Server error
- */
 const lessonDelete = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userId } = req.params;
@@ -289,39 +101,6 @@ const lessonDelete = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.lessonDelete = lessonDelete;
-/**
- * @swagger
- * components:
- *   schemas:
- *     Lesson:
- *       type: object
- *       required:
- *         - title
- *         - course_id
- *         - content
- *         - media_url
- *       properties:
- *         id:
- *           type: integer
- *           description: Unique identifier for the lesson
- *           example: 1
- *         title:
- *           type: string
- *           description: Title of the lesson
- *           example: "Introduction to Node.js"
- *         course_id:
- *           type: integer
- *           description: The ID of the course to which the lesson belongs
- *           example: 1
- *         content:
- *           type: string
- *           description: The content or description of the lesson
- *           example: "This is the first lesson of the Node.js course."
- *         media_url:
- *           type: string
- *           description: URL to the media file (e.g., video, audio) for the lesson
- *           example: "http://example.com/media/lesson1.mp4"
- */
 const fileRetrival = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { fileName } = req.params;
     const filePath = path_1.default.join(__dirname, "../../uploads/courses", fileName);

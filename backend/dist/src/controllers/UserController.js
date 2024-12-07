@@ -16,56 +16,6 @@ exports.GetUserById = exports.AddPin = exports.fillProfile = exports.imageRetriv
 const User_1 = __importDefault(require("../models/User"));
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
-/**
- * @swagger
- * tags:
- *   name: User
- *   description: User management and profile
- */
-/**
- * @swagger
- * /user/upload-profile/{id}:
- *   post:
- *     summary: Upload a profile picture for a user
- *     tags: [User]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: integer
- *         required: true
- *         description: ID of the user
- *     requestBody:
- *       required: true
- *       content:
- *         multipart/form-data:
- *           schema:
- *             type: object
- *             properties:
- *               file:
- *                 type: string
- *                 format: binary
- *                 description: Image file to upload
- *     responses:
- *       200:
- *         description: Profile picture uploaded successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "user image uploaded successfully"
- *                 user:
- *                   $ref: '#/components/schemas/User'
- *       400:
- *         description: No image file uploaded
- *       404:
- *         description: User not found
- *       500:
- *         description: Server error
- */
 const profileUploadController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
@@ -90,52 +40,6 @@ const profileUploadController = (req, res) => __awaiter(void 0, void 0, void 0, 
     }
 });
 exports.profileUploadController = profileUploadController;
-// using multer-s3 and aws to handle the upload folder
-/**
- * @swagger
- * /user/admin/delete-user/{userId}:
- *   delete:
- *     summary: Delete a user by admin
- *     tags: [User]
- *     parameters:
- *       - in: path
- *         name: userId
- *         schema:
- *           type: integer
- *         required: true
- *         description: ID of the admin user performing the delete
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               deleteUserId:
- *                 type: integer
- *                 description: ID of the user to be deleted
- *                 example: 2
- *     responses:
- *       200:
- *         description: User deleted successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "user deleted successfully"
- *                 deletedUsers:
- *                   type: integer
- *                   example: 1
- *       403:
- *         description: Not eligible to delete users
- *       404:
- *         description: User not found
- *       500:
- *         description: Server error
- */
 const AdminUserDelete = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userId } = req.params;
@@ -155,82 +59,6 @@ const AdminUserDelete = (req, res) => __awaiter(void 0, void 0, void 0, function
     }
 });
 exports.AdminUserDelete = AdminUserDelete;
-/**
- * @swagger
- * components:
- *   schemas:
- *     User:
- *       type: object
- *       properties:
- *         id:
- *           type: integer
- *           example: 1
- *         name:
- *           type: string
- *           example: "John Doe"
- *         email:
- *           type: string
- *           format: email
- *           example: "johndoe@example.com"
- *         role:
- *           type: string
- *           example: "user"
- *         profilePicture:
- *           type: string
- *           example: "https://example.com/profile-pictures/johndoe.jpg"
- *         createdAt:
- *           type: string
- *           format: date-time
- *           example: "2024-01-01T12:00:00Z"
- *         updatedAt:
- *           type: string
- *           format: date-time
- *           example: "2024-01-02T12:00:00Z"
- */
-/**
- * @swagger
- * components:
- *   schemas:
- *     File:
- *       type: object
- *       properties:
- *         id:
- *           type: integer
- *           description: Unique identifier for the file.
- *         filename:
- *           type: string
- *           description: Name of the uploaded file.
- *         mimetype:
- *           type: string
- *           description: MIME type of the file (e.g., image/jpeg, application/pdf).
- *         size:
- *           type: integer
- *           description: Size of the file in bytes.
- *         storagePath:
- *           type: string
- *           description: Path where the file is stored on the server.
- *         sender:
- *           type: string
- *           description: Email or identifier of the sender.
- *         receiver:
- *           type: string
- *           description: Email or identifier of the receiver.
- *       required:
- *         - filename
- *         - mimetype
- *         - size
- *         - storagePath
- *         - sender
- *         - receiver
- *       example:
- *         id: 1
- *         filename: example.jpg
- *         mimetype: image/jpeg
- *         size: 2048
- *         storagePath: /uploads/example.jpg
- *         sender: sender@example.com
- *         receiver: receiver@example.com
- */
 const imageRetrival = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { ImageName } = req.params;
     const filePath = path_1.default.join(__dirname, "../../uploads", ImageName);
@@ -244,7 +72,7 @@ const imageRetrival = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 exports.imageRetrival = imageRetrival;
 const fillProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { fullname, nickname, email, gender, phone_number, id } = req.body;
+        const { fullname, nickname, gender, phone_number, email, id } = req.body;
         const userUpdated = yield User_1.default.update({ username: fullname, nickName: nickname, gender, phone_number, email }, { where: { id } });
         console.log(userUpdated);
         res.status(201).json({ user: userUpdated });
@@ -273,7 +101,7 @@ const GetUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const { id } = req.params;
         const user = yield User_1.default.findByPk(id);
         if (user) {
-            res.status(201).json({ user });
+            res.status(201).json(user);
         }
         else {
             res.status(404).json({ message: "user not found" });
