@@ -278,6 +278,23 @@ const courseDelete = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const { courseId } = req.body;
         const user = yield User_1.default.findOne({ where: { id: userId } });
         if ((user === null || user === void 0 ? void 0 : user.role) === "admin") {
+            const CourseToDelete = yield Courses_1.default.findOne({ where: { id: courseId } });
+            let filePath;
+            if (CourseToDelete) {
+                filePath = path_1.default.join(__dirname, "../../uploads/courses", CourseToDelete.file);
+            }
+            if (filePath) {
+                fs_1.default.rm(filePath, (error) => {
+                    if (error) {
+                        console.log(error);
+                        res.status(500).json({ message: "error while deleting file " });
+                    }
+                    else {
+                        console.log("file successively deleted");
+                        res.status(201).json({ message: "file successively deleted" });
+                    }
+                });
+            }
             const deletedCourse = yield Courses_1.default.destroy({ where: { id: courseId } });
             res
                 .status(200)
