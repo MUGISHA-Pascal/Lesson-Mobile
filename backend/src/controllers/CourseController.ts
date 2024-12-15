@@ -339,7 +339,7 @@ export const CourseFileAdding = async (req: Request, res: Response) => {
     const user = await User.findOne({ where: { id: userId } });
     
     console.log(user?.role)
-    if (!user || user.role !== "admin") {
+    if (!user || user.role === "admin") {
       
        res
         .status(403)

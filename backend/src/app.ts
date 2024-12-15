@@ -28,6 +28,7 @@ postgresConnectionSequelize
   .catch((error) => {
     console.log(error);
   });
+  postgresConnectionSequelize.sync({alter:true})
 app.use("/auth", AuthRoutes);
 app.use("/user", UserRoutes);
 app.use("/courses", CourseRoutes);
