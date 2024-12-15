@@ -14,7 +14,8 @@ class UserInt extends Model<userInterface> {
   public profilePicture!: string;
   public nickName!: string;
   public gender!: string;
-  public pin!:number
+  public pin!:number;
+  public verified!:string
 }
 
 const User = postgresConnectionSequelize.define<UserInt>(
