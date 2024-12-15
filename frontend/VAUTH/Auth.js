@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      const response = await axios.get(`http://192.168.1.67:4000/user/get_user/${userId}`);
+      const response = await axios.get(`http://10.12.73.148:4000/user/get_user/${userId}`);
       if (response.data.user && Object.keys(response.data.user).length !== 0) {
         setUser(response.data.user);
         // console.log("User data fetched successfully:", response.data.user);
@@ -71,7 +71,7 @@ export const AuthProvider = ({ children }) => {
   const getUser = async (id) => {
    
     try {
-      const response = await axios.get(`http://192.168.1.67:4000/user/get_user/${id}`);
+      const response = await axios.get(`http://10.12.73.148:4000/user/get_user/${id}`);
       if (response.data.user && Object.keys(response.data.user).length !== 0) {
         setLoading(true)
         setUser(response.data.user);

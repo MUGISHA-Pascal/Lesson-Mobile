@@ -60,6 +60,7 @@ const PinKeypad = ({ navigation, route }) => {
   };
   const { getUser } = useContext(AuthContext);
   const goo = async () => {
+    console.log(id)
     try{
       setYesdirect(true);
     setTimeout(() => {
@@ -85,7 +86,7 @@ const PinKeypad = ({ navigation, route }) => {
       const pinNumber = parseInt(pin.join(""));
 
       const response = await axios.put(
-        "http://192.168.1.67:4000/user/add_pin",
+        "http://10.12.73.148:4000/user/add_pin",
         {
           pin: pinNumber,
           id: id,

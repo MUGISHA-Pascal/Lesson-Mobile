@@ -55,10 +55,11 @@ const AddCourse = ({ navigation }) => {
     formData.append('contentType', courseDetails.content_type);
 
     if (courseDetails.file) {
+      console.log("file is" ,courseDetails.file)
       formData.append('file', {
-        uri: courseDetails.file.uri,
-        name: courseDetails.file.name,
-        type: courseDetails.file.mimeType,
+        uri: courseDetails.file.assets[0].uri,
+        name: courseDetails.file.assets[0].name,
+        type: courseDetails.file.assets[0].mimeType,
       });
       console.log('File attached:', courseDetails.file.name);
     } else {
@@ -66,7 +67,8 @@ const AddCourse = ({ navigation }) => {
     }
 
     try {
-      const response = await axios.post('http://192.168.1.67:4000/courses/add_file', formData, {
+    
+      const response = await axios.post('http://10.12.73.148:4000/courses/add_file', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -80,6 +82,8 @@ const AddCourse = ({ navigation }) => {
       console.error('Error during form submission:', error.response?.data || error.message);
       Alert.alert('Error', 'Failed to add course. Please try again.');
       console.log(error)
+    }finally {
+      console.log(formData)
     }
   };
 

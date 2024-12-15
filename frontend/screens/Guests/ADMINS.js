@@ -36,7 +36,7 @@ const Admin = ({ navigation }) => {
 
     try {
       const response = await axios.post(
-        "http://192.168.1.67:4000/auth/signup",
+        "http://10.12.73.148:4000/auth/signup",
         user
       );
 

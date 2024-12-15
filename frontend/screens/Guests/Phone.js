@@ -33,11 +33,10 @@ const Phone = ({ navigation }) => {
      }, 3000);
    }else{
     try {
-      const responce = await axios.post("http://192.168.1.67:4000/auth/usersignup", {
+      const responce = await axios.post("http://10.12.73.148:4000/auth/usersignup", {
         username: route.params.name,
         phone_number: phoneNumber,
-   
-
+  
       })
    if(responce.data.success){
     console.log(responce.data)

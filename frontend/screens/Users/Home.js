@@ -60,6 +60,18 @@ export const Home = () => {
     "UX/UI Design",
     "Java Programming",
   ];
+
+  const [coursesData, setCoursesData] = useState([]);
+  
+  const getCourses = async () => {
+    try {
+      const res = await axios.get("http://10.12.73.148:4000/courses");
+      console.log(res.data)
+      setCoursesData(res.data.c)
+    }catch(error) {
+      console.log(error)
+    }
+  }
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedPopular, setSelectedPopular] = useState("");
   const slides = [
@@ -85,6 +97,7 @@ export const Home = () => {
 
   // Automatically move to the next slide every 3 seconds
   useEffect(() => {
+    getCourses()
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % slides.length);
     }, 6000);
@@ -99,25 +112,25 @@ export const Home = () => {
   const handlePrevious = () => {
     setCurrentIndex((currentIndex - 1 + slides.length) % slides.length);
   };
-  const getUser = async (id) => {
-    try {
-      const response = await axios.get(
-        `http://192.168.1.67:4000/user/get_user/${id}`
-      );
-      if (response) {
-        console.log(response.data);
-        setUser(response.data)
-      } else {
-        console.log("Failed to get the response");
-      }
-    } catch (error) {
+  // const getUser = async (id) => {
+  //   try {
+  //     const response = await axios.get(
+  //       `http://192.168.1.67:4000/user/get_user/${id}`
+  //     );
+  //     if (response) {
+  //       console.log(response.data);
+  //       setUser(response.data)
+  //     } else {
+  //       console.log("Failed to get the response");
+  //     }
+  //   } catch (error) {
       
-      if (error) {
-        console.log(error)
-        Alert.alert("Failed to get user with that id");
-      }
-    }
-  };
+  //     if (error) {
+  //       console.log(error)
+  //       Alert.alert("Failed to get user with that id");
+  //     }
+  //   }
+  // };
 
 
   const renderCourseItem = ({ item }) => (

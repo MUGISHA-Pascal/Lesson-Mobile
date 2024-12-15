@@ -48,7 +48,7 @@ const FullInfo = ({ navigation }) => {
     let go = false;
     const age =new Date(date).getFullYear() - new Date(old).getFullYear()
     
-    if(age >= 15) {
+    if(age <= 15) {
       setEb("Please use appropriate year");
       setTimeout(() => {
         setEb("");
@@ -63,7 +63,7 @@ const FullInfo = ({ navigation }) => {
       }, 3000);
     }else{
  try {
-      const response = await axios.put('http://192.168.1.67:4000/user/fill_profile', {
+      const response = await axios.put('http://10.12.73.148:4000/user/fill_profile', {
         fullname,
         nickname,
         email,
