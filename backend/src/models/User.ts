@@ -14,8 +14,8 @@ class UserInt extends Model<userInterface> {
   public profilePicture!: string;
   public nickName!: string;
   public gender!: string;
-  public pin!:number;
-  public verified!:string
+  public pin!: number;
+  public verified!: string;
 }
 
 const User = postgresConnectionSequelize.define<UserInt>(
@@ -71,8 +71,8 @@ const User = postgresConnectionSequelize.define<UserInt>(
     verified: {
       type: DataTypes.STRING,
       allowNull: true,
-      defaultValue :"NO"
-    }
+      defaultValue: "NO",
+    },
   },
   {
     createdAt: true,

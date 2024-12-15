@@ -268,6 +268,26 @@ export const courseDelete = async (req: Request, res: Response) => {
     const { courseId } = req.body;
     const user = await User.findOne({ where: { id: userId } });
     if (user?.role === "admin") {
+      const CourseToDelete = await Course.findOne({ where: { id: courseId } });
+      let filePath;
+      if (CourseToDelete) {
+        filePath = path.join(
+          __dirname,
+          "../../uploads/courses",
+          CourseToDelete.file
+        );
+      }
+      if (filePath) {
+        fs.rm(filePath, (error) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ message: "error while deleting file " });
+          } else {
+            console.log("file successively deleted");
+            res.status(201).json({ message: "file successively deleted" });
+          }
+        });
+      }
       const deletedCourse = await Course.destroy({ where: { id: courseId } });
       res
         .status(200)
