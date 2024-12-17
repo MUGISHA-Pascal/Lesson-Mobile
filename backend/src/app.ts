@@ -38,4 +38,5 @@ app.use("/questions", questionRoutes);
 app.use("/certificates", certificateRoutes);
 app.use("/lessons", LessonRouter);
 app.use("/quiz", QuizRoutes);
+
 export default app;

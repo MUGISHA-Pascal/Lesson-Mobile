@@ -1,7 +1,7 @@
 import { Sequelize } from "sequelize";
 export const postgresConnectionSequelize = new Sequelize({
   username: "postgres",
-  password: "postgres",
+  password: "theo123",
   database: "LessonTracker",
   host: "localhost",
   port: 5432,

@@ -111,11 +111,11 @@ export const quizAdding = async (req: Request, res: Response) => {
  */
 export const getQuiz = async (req: Request, res: Response) => {
   try {
-    const { course_id } = req.body;
-    const quiz = await Quiz.findAll({
+    const { course_id } = req.params;
+    const quizzes = await Quiz.findAll({
       where: { course_id },
     });
-    res.status(200).json({ message: "quiz found successfully", quiz });
+    res.status(200).json({ message: "quiz found successfully", quizzes });
   } catch (error) {
     console.log(error);
   }

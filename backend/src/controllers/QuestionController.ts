@@ -112,7 +112,7 @@ export const questionAdding = async (req: Request, res: Response) => {
  */
 export const getQuestions = async (req: Request, res: Response) => {
   try {
-    const { quiz_id } = req.body;
+    const { quiz_id } = req.params;
     const questions = await Question.findAll({
       where: { quiz_id },
     });
