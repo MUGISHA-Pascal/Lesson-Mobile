@@ -1,8 +1,35 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Image } from 'react-native';
 import AntD from 'react-native-vector-icons/AntDesign';
+import * as WebBrowser from 'expo-web-browser'
+import * as Google from 'expo-auth-session/providers/google'
+import * as AuthSession from 'expo-auth-session';
+
+
+
+  WebBrowser.maybeCompleteAuthSession()
 
 const AuthMethod = ({navigation}) => {
+
+  const [request, responce, promptAsync] = Google.useAuthRequest({
+    // webClientId:"171513257792-q47qu64eobjjugk1u0socricfk032gqg.apps.googleusercontent.com",
+    // iosClientId:"171513257792-b0f3eanov7v33ptal15jf2ogue0atoia.apps.googleusercontent.com",
+    androidClientId:"171513257792-cpuqn2vpdkccd9r2sbmmlafdd6eubjan.apps.googleusercontent.com"
+  
+  })
+
+  const handleToken = ()=>{
+    if(responce?.type === "success"){
+      const {authentication} = responce;
+      const token = authentication?.accessToken;
+      console.log("access token", token)
+    }
+  }
+
+  useEffect(()=>{
+    handleToken();
+
+  },[responce])
   return (
     <View style={styles.container}>
 
@@ -10,10 +37,10 @@ const AuthMethod = ({navigation}) => {
        
       <View style={styles.All_combined_container}> 
        
-        <Text style={styles.Text_Titile}>Let’s you in</Text>
-           <View>
+        <Text style={styles.Text_Titile}>LOGO</Text>
+           {/* <View>
             
-           <TouchableOpacity style={styles.LoginButton}>
+           <TouchableOpacity onPress={()=>promptAsync()} style={styles.LoginButton}>
            <View style={styles.nextButtonInsider}>
            <Image style={{width:20,height:20}} source={require("../../assets/google.png")} />
           </View>
@@ -28,11 +55,11 @@ const AuthMethod = ({navigation}) => {
             <Text style={{color:"#545454", fontWeight:"800",fontSize:16,marginLeft:8}}>Continue with Apple</Text>
           
           </TouchableOpacity>
-           </View>
+           </View> */}
 
          
         <View style={styles.stepsContainer}>
-                <Text style={{paddingVertical:20, color:"#545454",fontSize:18,fontWeight:800}}>(Or)</Text>
+                {/* <Text style={{paddingVertical:20, color:"#545454",fontSize:18,fontWeight:800}}>(Or)</Text> */}
 
           <TouchableOpacity onPress={()=>navigation.navigate("Login")} style={styles.nextButton}>
             <Text style={{color:"#FFFFFF", fontWeight:"600",fontSize:18,marginLeft:30}}>Sign In with Your Account</Text>

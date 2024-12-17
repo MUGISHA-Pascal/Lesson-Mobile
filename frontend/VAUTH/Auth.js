@@ -7,13 +7,11 @@ export const AuthContext = createContext({});
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState({});
   const [userId, setUserId] = useState(null);
-  const [loading ,setLoading]= useState(true)
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-    
-        checkAndSetUserId();
-      
+      checkAndSetUserId();
     }, 5000); // Poll every 5 seconds
 
     // Cleanup function to clear the interval
@@ -42,10 +40,9 @@ export const AuthProvider = ({ children }) => {
 
       if (parsedUserId) {
         setUserId(parsedUserId);
-   
       } else {
         console.log("No user ID found in AsyncStorage.");
-        setLoading(false)
+        setLoading(false);
       }
     } catch (error) {
       console.error("Failed to retrieve user ID from AsyncStorage:", error);
@@ -54,33 +51,36 @@ export const AuthProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      const response = await axios.get(`http://10.12.73.148:4000/user/get_user/1`);
+      const response = await axios.get(
+        `http://10.12.73.148:4000/user/get_user/1`
+      );
       if (response.data.user && Object.keys(response.data.user).length !== 0) {
         setUser(response.data.user);
         // console.log("User data fetched successfully:", response.data.user);
-        setLoading(false)
+        setLoading(false);
       } else {
         console.log("Failed to get the response or user data is empty");
-        setLoading(true)
+        setLoading(true);
       }
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
   };
-// console.log(userId)
+  // console.log(userId)
   const getUser = async (id) => {
-   
     try {
-      const response = await axios.get(`http://10.12.73.148:4000/user/get_user/${id}`);
+      const response = await axios.get(
+        `http://192.168.1.78:4000/user/get_user/${id}`
+      );
       if (response.data.user && Object.keys(response.data.user).length !== 0) {
-        setLoading(true)
+        setLoading(true);
         setUser(response.data.user);
-        setTimeout(()=>{
-          setLoading(false)
-        },3000)
+        setTimeout(() => {
+          setLoading(false);
+        }, 3000);
       } else {
         console.log("Failed to get the response");
-        setLoading(false)
+        setLoading(false);
       }
     } catch (error) {
       console.error("Error fetching user data:", error);
@@ -100,7 +100,7 @@ export const AuthProvider = ({ children }) => {
         change,
         userId,
         getUser,
-        loading
+        loading,
       }}
     >
       {children}

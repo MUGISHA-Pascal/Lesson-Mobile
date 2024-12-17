@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "497623088085",
+    "project_id": "amategeko-8df4d",
+    "storage_bucket": "amategeko-8df4d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:497623088085:android:a106fce99a6f46d9b21b5c",
+        "android_client_info": {
+          "package_name": "com.batizo.Amategeko"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZ77xqf-Ota3yqxuWwhYK0XUq7qrlX06E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

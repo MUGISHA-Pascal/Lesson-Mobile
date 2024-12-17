@@ -11,7 +11,7 @@ import { AuthContext } from '../../VAUTH/Auth';
 import * as DocumentPicker from 'expo-document-picker'
 import { useRoute } from '@react-navigation/native';
 import axios from 'axios';
-import { AlertNotificationRoot, Toast } from 'react-native-alert-notification';
+import { ALERT_TYPE, AlertNotificationRoot, Toast } from 'react-native-alert-notification';
 
 const FullInfo = ({ navigation }) => {
   const [courseDetails, setCourseDetails] = useState({file:null})
@@ -40,6 +40,7 @@ const FullInfo = ({ navigation }) => {
   ];
   const [isFocus, setIsFocus] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
+  const [profileImageNew, setProfileImagenew] = useState(null);
   const [user, setUser] = useState()
   
 
@@ -63,7 +64,7 @@ const FullInfo = ({ navigation }) => {
       }, 3000);
     }else{
  try {
-      const response = await axios.put('http://10.12.73.148:4000/user/fill_profile', {
+      const response = await axios.put('http://192.168.1.78:4000/user/fill_profile', {
         fullname,
         nickname,
         email,
@@ -86,57 +87,58 @@ const FullInfo = ({ navigation }) => {
   };
 
   const handleFilePick = async () => {
-    console.log('Opening file picker...');
+    console.log("Opening file picker...");
     try {
       const res = await DocumentPicker.getDocumentAsync({
         type: "*/*", // Allow all file types
       });
 
-        console.log('File selected:', res);
-        // setSelectedFile(res.assets[0].name)
-        setProfileImage(res)
-        
-        Alert.alert('File Selected', `You selected: ${res.name}`);
-      uploadImage(profileImage)
-    } catch (err) {
-      console.error('Error picking file:', err);
-      Alert.alert('Error', 'Failed to pick file. Please try again.');
-    }
-  };
+      console.log("File selected:", res);
+      setProfileImage(res.assets[0]);
+      setProfileImagenew(res.assets[0])
 
+    // setTimeout(() => {
 
-  
-  
-  
-  const uploadImage = async (image) => {
-    const formData = new FormData();
-    formData.append('ProfilePicture', {
-      uri: image.uri,
-      type: image.type,
-      name: image.name,
-    });
-   console.log(image.uri)
-    try {
-      const response = await axios.put(`http://192.168.1.67:4000/user/upload_profile/${route.params.id}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      // Alert.alert('Success', 'Profile image uploaded successfully!');
-      console.log(response.data);
-
-    } catch (error) {
-      // Alert.alert('Error', 'Failed to upload image. Please try again.');
-      Toast.show({
-        type: ALERT_TYPE.ERROR,
-        title: 'Error',
-        textBody: 'Failed to upload image. Please try again.',
-      })
+    //   uploadImage()
       
-      console.error(error);
+    // }, 3000);
+  
+    } catch (err) {
+      console.error("Error picking file:", err);
+      Alert.alert("Error", "Failed to pick file. Please try again.");
     }
   };
 
+  console.log(profileImage)
+  const uploadImage = async () => {
+   
+    const formData = new FormData();
+    formData.append("ProfilePicture", {
+      uri: profileImage.uri,
+      type: profileImage.mimeType,
+      name: profileImage.name,
+    });
+    console.log(profileImage.uri);
+    if(profileImage){
+      try {
+        const response = await axios.put(
+          `http://192.168.1.78:4000/user/upload_profile/${route.params.id}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        console.log("errror????",response.data)
+        // Alert.alert("Success", "Profile image uploaded successfully!");
+        setProfileImage("")
+      } catch (error) {
+        Alert.alert("Error", "Failed to upload image. Please try again.");
+        console.error(error);
+      }
+    }
+  };
 
 
   return (
@@ -157,7 +159,7 @@ const FullInfo = ({ navigation }) => {
             width={150}
             height={150}
             style={{ borderRadius: 100, opacity: 0.5 }}
-            source={profileImage || { uri: "https://i.pinimg.com/564x/15/0f/a8/150fa8800b0a0d5633abc1d1c4db3d87.jpg" }}
+            source={profileImageNew || { uri: "https://i.pinimg.com/564x/15/0f/a8/150fa8800b0a0d5633abc1d1c4db3d87.jpg" }}
           />
           <TouchableOpacity onPress={handleFilePick} style={{ position: "absolute", right: 0, bottom: 5, fontSize: 30, backgroundColor: "#167F71", padding: 7, borderRadius: 50 }}>
             <Feather name='edit' style={{ fontSize: 25, color: "white" }} />
@@ -277,6 +279,17 @@ const FullInfo = ({ navigation }) => {
             </View>
           </View>
         </ScrollView>
+           {profileImage&& 
+                  <>
+                  <View style={{position:"absolute",bottom:100,backgroundColor:"#F5F9FF",zIndex:9999, width:Dimensions.get("screen").width/2,height:220,borderRadius:10,padding:10,justifyContent:"center",alignItems:"center",borderWidth:2,borderColor:"rgba(237, 231, 225,0.4)"}}>
+                <Image source={{uri:profileImage.uri}}  style={{width:Dimensions.get("screen").width/2-20,height:150,borderRadius:10,}}/>
+                
+                  <TouchableOpacity style={{backgroundColor:"#007bff",padding:10,borderRadius:10,width:"100%",marginTop:10}} onPress={uploadImage}>
+                    <Text style={{color:"white",textAlign:"center"}}>upload</Text>
+                  </TouchableOpacity>
+                  </View>
+                  </>
+                  }
       </View>
 
       {open && (
