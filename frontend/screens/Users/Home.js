@@ -21,8 +21,9 @@ import { Ionicons } from "@expo/vector-icons"; // Make sure to install @expo/vec
 import { AuthContext } from "../../VAUTH/Auth";
 import axios from "axios";
 
-export const Home = () => {
 
+export const Home = () => {
+  const [coursesData, setCoursesData] = useState([]);
   const {user} = useContext(AuthContext);
   const navigation = useNavigation();
   const Academi = [
@@ -61,13 +62,13 @@ export const Home = () => {
     "Java Programming",
   ];
 
-  const [coursesData, setCoursesData] = useState([]);
+
   
   const getCourses = async () => {
     try {
       const res = await axios.get("http://10.12.73.148:4000/courses");
       console.log(res.data)
-      setCoursesData(res.data.c)
+      setCoursesData(res.data.courses)
     }catch(error) {
       console.log(error)
     }
@@ -115,33 +116,37 @@ export const Home = () => {
 
 
   const renderCourseItem = ({ item }) => (
-    <View style={styles.card}>
-      <Image source={{ uri: item.image }} style={styles.image} />
-      <View style={{ paddingHorizontal: 5, paddingBottom: 10 }}>
-        <View style={styles.content}>
-          <View style={styles.header}>
-            <View>
-              <Text style={styles.category}>{item.category}</Text>
-              <Text style={styles.name}>{item.name}</Text>
+    <TouchableWithoutFeedback
+      onPress={() => navigation.navigate('Cdescri', { quiz: 'Inshamake kuri rino somo' })}
+    >
+      <View style={styles.card}>
+        <Image source={require("../../assets/courseImage.png")} style={styles.image} />
+        <View style={{ paddingHorizontal: 5, paddingBottom: 10 }}>
+          <View style={styles.content}>
+            <View style={styles.header}>
+              <View>
+                <Text style={styles.category}>{item.category || 'General'}</Text>
+                <Text style={styles.name}>{item.title}</Text>
+              </View>
+              <View style={styles.bookmarkIcon}>
+                <AntD name="book" size={20} color="#333" />
+              </View>
             </View>
-            <View style={styles.bookmarkIcon}>
-              <AntD name="book" size={20} color="#333" />
-            </View>
-          </View>
 
-          <View style={styles.courseInfo}>
-            <Text style={styles.price}>{item.price} | </Text>
-            <Text style={styles.rating}>
-              {" "}
-              <AntD name="star" size={15} color="orange" /> {item.rating} |{" "}
-            </Text>
-            <Text style={styles.students}>{item.students} Std</Text>
+            <View style={styles.courseInfo}>
+              <Text style={styles.price}>{item.price || 'Free'} | </Text>
+              <Text style={styles.rating}>
+                <AntD name="star" size={15} color="orange" /> {item.rating || 'N/A'} |
+              </Text>
+              <Text style={styles.students}>{item.students || 0} Std</Text>
+            </View>
           </View>
         </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 
+  
   return (
     <View style={{ flex: 1, backgroundColor: "#F5F9FF", width: "100%" }}>
       <StatusBar
@@ -386,12 +391,20 @@ export const Home = () => {
             />
 
             <View style={{}}>
-              <FlatList
-                data={Courses}
+            {
+              coursesData.length > 0 ? (
+                <FlatList
+                data={coursesData}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={renderCourseItem}
                 horizontal
               />
+              ): (
+                <View>
+                  <Text>No Course Available</Text>
+                </View>
+              )
+            }
             </View>
 
             <View

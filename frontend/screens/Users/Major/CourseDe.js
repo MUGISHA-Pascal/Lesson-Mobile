@@ -1,10 +1,13 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Dimensions, Image, StatusBar, ScrollView } from 'react-native';
+import React, { useContext, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Dimensions, Image, StatusBar, ScrollView, Pressable } from 'react-native';
 import { Ionicons, MaterialIcons, AntDesign } from '@expo/vector-icons';
-
+import { AuthContext } from '../../../VAUTH/Auth';
 const CourseDe = ({ route, navigation }) => {
-  const { course } = route.params;
-
+  const {user} = useContext(AuthContext);
+  const { course_id } = route.params;
+ useEffect(()=>{
+  console.log(course_id)
+ },[])
   return (
 
     <>
@@ -87,6 +90,25 @@ const CourseDe = ({ route, navigation }) => {
                 <TouchableOpacity onPress={() => navigation.navigate('Lesson')} style={styles.enrollButton}>
                   <Text style={styles.enrollButtonText}>Enroll Now</Text>
                 </TouchableOpacity>
+
+                {user.role !== "admin" ? (
+                <View>
+                    <Pressable style={styles.enrollButton} onPress={() => navigation.navigate('addQuiz', { course_id: course_id })}>
+                    <Text style={styles.enrollButtonText}>+ Quiz</Text>
+                  </Pressable>
+                  <Pressable style={styles.enrollButton} onPress={() => navigation.navigate('viewQuizzes', { course_id: course_id })}>
+                    <Text style={styles.enrollButtonText}>Get Quizzes</Text>
+                  </Pressable>
+                </View>
+                ) : (
+                 
+                  <View>
+                <Pressable style={styles.enrollButton} onPress={() => navigation.navigate('viewQuizzes', { course_id: course_id })}>
+                    <Text style={styles.enrollButtonText}>View Quizzes</Text>
+                  </Pressable>
+                  </View>
+                // Add the button for the user to do the quiz and view the quizzes for his course  
+                )}
               </View>
             </View>
           </View>
