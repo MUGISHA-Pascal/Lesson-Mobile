@@ -33,7 +33,7 @@ const Phone = ({ navigation }) => {
      }, 3000);
    }else{
     try {
-      const responce = await axios.post("http://10.12.73.148:4000/auth/usersignup", {
+      const responce = await axios.post("http://192.168.1.78:4000/auth/usersignup", {
         username: route.params.name,
         phone_number: phoneNumber,
   
@@ -73,8 +73,8 @@ const Phone = ({ navigation }) => {
 
             <View style={{ marginTop: 20 }}>
               <Text style={{ fontSize: 25, marginVertical: 10, fontWeight: 400, color: "#202244" }}>
-                Andikamo Nemero yawe y' telefone
-              </Text>
+                Andikamo Nemero yawe ya telefone
+              </Text> 
 
               {userExist && <Message_info type="error" message="The user with this phone number exist" />
               }

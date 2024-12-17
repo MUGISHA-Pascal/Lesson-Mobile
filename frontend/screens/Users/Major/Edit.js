@@ -42,7 +42,7 @@ const Edit = ({ navigation }) => {
   const chandeDetails = async () => {
 
     try {
-      const change = await axios.put('http://192.168.1.67:4000/user/fill', {
+      const change = await axios.put('http://192.168.1.78:4000/user/fill', {
         fullname: fullname,
         nickname: nickName,
         id: user.id,
@@ -72,26 +72,26 @@ const Edit = ({ navigation }) => {
 
       console.log("File selected:", res);
       setProfileImage(res.assets[0]);
-      Alert.alert("File Selected", `You selected: ${res.assets[0].name}`);
-      uploadImage(profileImage);
+      // Alert.alert("File Selected", `You selected: ${res.assets[0].name}`);
+  
     } catch (err) {
       console.error("Error picking file:", err);
       Alert.alert("Error", "Failed to pick file. Please try again.");
     }
   };
 
-  const uploadImage = async (image) => {
+  const uploadImage = async () => {
      
       const formData = new FormData();
       formData.append("ProfilePicture", {
-        uri: image.uri,
-        type: image.mimeType,
-        name: image.name,
+        uri: profileImage.uri,
+        type: profileImage.mimeType,
+        name: profileImage.name,
       });
-      console.log(image.uri);
+      console.log(profileImage.uri);
       try {
         const response = await axios.put(
-          `http://192.168.1.67:4000/user/upload_profile/${user.id}`,
+          `http://192.168.1.78:4000/user/upload_profile/${user.id}`,
           formData,
           {
             headers: {
@@ -100,7 +100,8 @@ const Edit = ({ navigation }) => {
           }
         );
         console.log(response.data)
-        Alert.alert("Success", "Profile image uploaded successfully!");
+        // Alert.alert("Success", "Profile image uploaded successfully!");
+        setProfileImage("")
       } catch (error) {
         Alert.alert("Error", "Failed to upload image. Please try again.");
         console.error(error);
@@ -127,7 +128,7 @@ const Edit = ({ navigation }) => {
                 {user.profilePicture ? <>
                   <Image width={150} height={150} style={{ borderRadius: 100, }} 
                 source={{
-                  uri: `http://192.168.1.67:4000/user/image/${user.profilePicture
+                  uri: `http://192.168.1.78:4000/user/image/${user.profilePicture
                     .replace(/\\/g, '/')     
                     .split('/').pop()}`,      
                 }}
@@ -265,11 +266,21 @@ const Edit = ({ navigation }) => {
                 </View>
               </TouchableOpacity>
             </View>
-
+  
 
           </View>
         </ScrollView>
-
+        {profileImage&& 
+          <>
+          <View style={{position:"absolute",bottom:100,backgroundColor:"#F5F9FF",zIndex:9999, width:Dimensions.get("screen").width/2,height:220,borderRadius:10,padding:10,justifyContent:"center",alignItems:"center",borderWidth:2,borderColor:"rgba(237, 231, 225,0.4)"}}>
+        <Image source={{uri:profileImage.uri}}  style={{width:Dimensions.get("screen").width/2-20,height:150,borderRadius:10,}}/>
+        
+          <TouchableOpacity style={{backgroundColor:"#007bff",padding:10,borderRadius:10,width:"100%",marginTop:10}} onPress={uploadImage}>
+            <Text style={{color:"white",textAlign:"center"}}>upload</Text>
+          </TouchableOpacity>
+          </View>
+          </>
+          }
       </View>
       {/* Date Picker Modal */}
       {open && (

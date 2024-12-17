@@ -27,7 +27,7 @@ const Register = ({navigation}) => {
   return (
     <View style={styles.container}>
 
-<TouchableOpacity onPress={() => navigation.goBack()} style={{ marginTop: 69, flexDirection: "row", alignItems: "center",marginHorizontal:30 }}>
+<TouchableOpacity onPress={() => navigation.goBack()} style={{ marginTop: 15, flexDirection: "row", alignItems: "center",marginHorizontal:30 }}>
         <AntD style={{ fontSize: 25, marginRight: 6 }} name='arrowleft' />
         <Text style={{ fontSize: 21, fontWeight: 600, color: "#202244" }}>Sign Up</Text>
       </TouchableOpacity>
@@ -89,9 +89,17 @@ const Register = ({navigation}) => {
               <AntD name="arrowright" style={styles.arrowIcon} />
             </View>
           </TouchableOpacity>
-          <Text style={{ paddingVertical: 20, color: "#545454", fontSize: 18, fontWeight: 800 }}>Or Continue With</Text>
-
-          <View style={styles.continueWith}>
+ <Text
+                style={{
+                  paddingVertical: 20,
+                  color: "#545454",
+                  fontSize: 18,
+                  fontWeight: 800,
+                }}
+              >
+                Companyname Inc.
+              </Text>
+          {/* <View style={styles.continueWith}>
             
             <TouchableOpacity style={styles.LoginButton}>
             <View style={styles.nextButtonInsider}>
@@ -106,7 +114,7 @@ const Register = ({navigation}) => {
            </View>
            </TouchableOpacity>
 
-            </View>
+            </View> */}
 
           <TouchableOpacity onPress={()=>navigation.navigate("Login",{name:name})} style={styles.nextButton2}>
             <Text style={{ color: "#545454", fontWeight: "800", fontSize: 14, textAlign: "center" }}>Already have an Account?</Text>

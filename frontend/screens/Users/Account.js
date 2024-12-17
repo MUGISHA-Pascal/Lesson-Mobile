@@ -93,38 +93,47 @@ const Account = ({ navigation }) => {
 
       console.log("File selected:", res);
       setProfileImage(res.assets[0]);
-      Alert.alert("File Selected", `You selected: ${res.assets[0].name}`);
-      uploadImage(profileImage);
+
+    // setTimeout(() => {
+
+    //   uploadImage()
+      
+    // }, 3000);
+  
     } catch (err) {
       console.error("Error picking file:", err);
       Alert.alert("Error", "Failed to pick file. Please try again.");
     }
   };
 
-  const uploadImage = async (image) => {
+  console.log(profileImage)
+  const uploadImage = async () => {
    
     const formData = new FormData();
     formData.append("ProfilePicture", {
-      uri: image.uri,
-      type: image.mimeType,
-      name: image.name,
+      uri: profileImage.uri,
+      type: profileImage.mimeType,
+      name: profileImage.name,
     });
-    console.log(image.uri);
-    try {
-      const response = await axios.put(
-        `http://192.168.1.67:4000/user/upload_profile/${user.id}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      console.log(response.data)
-      Alert.alert("Success", "Profile image uploaded successfully!");
-    } catch (error) {
-      Alert.alert("Error", "Failed to upload image. Please try again.");
-      console.error(error);
+    console.log(profileImage.uri);
+    if(profileImage){
+      try {
+        const response = await axios.put(
+          `http://192.168.1.78:4000/user/upload_profile/${user.id}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        console.log("errror????",response.data)
+        // Alert.alert("Success", "Profile image uploaded successfully!");
+        setProfileImage("")
+      } catch (error) {
+        Alert.alert("Error", "Failed to upload image. Please try again.");
+        console.error(error);
+      }
     }
   };
 
@@ -169,13 +178,15 @@ const Account = ({ navigation }) => {
         }}
       >
         <View style={styles.header}>
+
+       
           <View style={styles.avatarWrapper}>
     
 
   {user.profilePicture ? <>
                   <Image   style={styles.avatar}
                 source={{
-                  uri: `http://192.168.1.67:4000/user/image/${user.profilePicture
+                  uri: `http://192.168.1.78:4000/user/image/${user.profilePicture
                     .replace(/\\/g, '/')     
                     .split('/').pop()}`,      
                 }}
@@ -185,6 +196,8 @@ const Account = ({ navigation }) => {
                 source={{ uri: "https://i.pinimg.com/564x/15/0f/a8/150fa8800b0a0d5633abc1d1c4db3d87.jpg" }} 
                 />
                 </>}
+
+                
             <TouchableOpacity
               onPress={handleFilePick}
               style={styles.avatarIcon}
@@ -192,6 +205,7 @@ const Account = ({ navigation }) => {
               <AntDesign name="camerao" size={20} color="white" />
             </TouchableOpacity>
           </View>
+       
           <Text style={styles.profileName}>
             { user.username }
           </Text>
@@ -199,7 +213,7 @@ const Account = ({ navigation }) => {
             {user.email}
           </Text>
         </View>
-
+       
         {/* Profile Options */}
         <FlatList
           data={profileOptions}
@@ -209,6 +223,18 @@ const Account = ({ navigation }) => {
           style={{ marginBottom: 0 }}
         />
       </View>
+      {profileImage&& 
+          <>
+          <View style={{position:"absolute",bottom:10,backgroundColor:"#F5F9FF",zIndex:9999, width:Dimensions.get("screen").width/2,height:220,borderRadius:10,padding:10,justifyContent:"center",alignItems:"center",borderWidth:2,borderColor:"rgba(237, 231, 225,0.4)"}}>
+        <Image source={{uri:profileImage.uri}}  style={{width:Dimensions.get("screen").width/2-20,height:150,borderRadius:10,}}/>
+        
+          <TouchableOpacity style={{backgroundColor:"#007bff",padding:10,borderRadius:10,width:"100%",marginTop:10}} onPress={uploadImage}>
+            <Text style={{color:"white",textAlign:"center"}}>upload</Text>
+          </TouchableOpacity>
+          </View>
+          </>
+          }
+
     </View>
   );
 };

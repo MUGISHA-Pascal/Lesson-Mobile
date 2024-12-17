@@ -86,7 +86,7 @@ const PinKeypad = ({ navigation, route }) => {
       const pinNumber = parseInt(pin.join(""));
 
       const response = await axios.put(
-        "http://10.12.73.148:4000/user/add_pin",
+        "http://192.168.1.78:4000/user/add_pin",
         {
           pin: pinNumber,
           id: id,

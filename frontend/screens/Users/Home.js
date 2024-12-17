@@ -112,25 +112,6 @@ export const Home = () => {
   const handlePrevious = () => {
     setCurrentIndex((currentIndex - 1 + slides.length) % slides.length);
   };
-  // const getUser = async (id) => {
-  //   try {
-  //     const response = await axios.get(
-  //       `http://192.168.1.67:4000/user/get_user/${id}`
-  //     );
-  //     if (response) {
-  //       console.log(response.data);
-  //       setUser(response.data)
-  //     } else {
-  //       console.log("Failed to get the response");
-  //     }
-  //   } catch (error) {
-      
-  //     if (error) {
-  //       console.log(error)
-  //       Alert.alert("Failed to get user with that id");
-  //     }
-  //   }
-  // };
 
 
   const renderCourseItem = ({ item }) => (

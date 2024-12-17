@@ -5,13 +5,16 @@
     "version": "1.0.0",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "scheme": "Amategeko",
+    
     "splash": {
       "image": "./assets/2.png",
       "resizeMode": "contain",
-      "backgroundColor": "white"
+      "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.batizo.Amategeko"
     },
     "android": {
       "adaptiveIcon": {
@@ -33,6 +36,9 @@
     },
     "updates": {
       "url": "https://u.expo.dev/dfc6d908-0628-439e-b4d7-bfe00ef78360"
+    },
+    "auth": {
+      "redirectUrl": "https://auth.expo.io/@batizo/Amategeko"
     }
   }
 }

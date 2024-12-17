@@ -67,8 +67,7 @@ const AddCourse = ({ navigation }) => {
     }
 
     try {
-    
-      const response = await axios.post('http://10.12.73.148:4000/courses/add_file', formData, {
+      const response = await axios.post('http://192.168.1.78:4000/courses/add_file', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

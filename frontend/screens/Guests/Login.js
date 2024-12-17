@@ -60,7 +60,7 @@ const Login = ({ navigation }) => {
 
     if (go) {
       try {
-        const response = await axios.post("http://192.168.1.67:4000/auth/loginForUser", {
+        const response = await axios.post("http://192.168.1.78:4000/auth/loginForUser", {
 
           phone_number: phoneNumber,
           pin: password,
@@ -277,10 +277,10 @@ const Login = ({ navigation }) => {
                   fontWeight: 800,
                 }}
               >
-                Or Continue With
+                Companyname Inc.
               </Text>
 
-              <View style={styles.continueWith}>
+              {/* <View style={styles.continueWith}>
                 <TouchableOpacity style={styles.LoginButton}>
                   <View style={styles.nextButtonInsider}>
                     <Image
@@ -298,7 +298,7 @@ const Login = ({ navigation }) => {
                     />
                   </View>
                 </TouchableOpacity>
-              </View>
+              </View> */}
 
               <TouchableOpacity
                 onPress={() => navigation.navigate("Register")}
