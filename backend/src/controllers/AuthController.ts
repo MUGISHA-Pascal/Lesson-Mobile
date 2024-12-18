@@ -95,13 +95,44 @@ export const login = async (req: Request, res: Response) => {
     console.log(error);
   }
 };
+export const webAdminLogin = async (req: Request, res: Response) => {
+  let { email, password_hash } = req.body;
+  try {
+    const user = await User.findOne({ where: { email } });
+    if (user?.role !== "admin") {
+      if (user) {
+        const ismatch = await bcrypt.compare(password_hash, user.password_hash);
+        if (ismatch) {
+          const token = createToken(user.id);
+          res.cookie("jwt", token, { maxAge: maxAge * 1000 });
+          res.status(200).json({
+            message: "user found",
+            user: {
+              id: user.id,
+              username: user.username,
+              email: user.email,
+              role: user.role,
+            },
+          });
+        }
+      } else {
+        res.status(401).json({ message: "user not found(password)" });
+      }
+    } else {
+      res.status(401).json({ message: "you are not admin" });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
 export const loginForUser = async (req: Request, res: Response) => {
   let { phone_number, pin } = req.body;
   try {
     const user = await User.findOne({ where: { phone_number, pin } });
     if (user) {
       // Compare the plain pin number
-      if (parseInt(pin) === user.pin) { // assuming 'pin' is the field in your User model
+      if (parseInt(pin) === user.pin) {
+        // assuming 'pin' is the field in your User model
         const token = createToken(user.id);
         res.cookie("jwt", token, { maxAge: maxAge * 1000 });
         res.status(200).json({
@@ -124,7 +155,6 @@ export const loginForUser = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
 
 /**
  * @swagger
@@ -188,7 +218,7 @@ export const signup = async (req: Request, res: Response) => {
       phone_number,
       password_hash,
       role,
-      verified :"NO"
+      verified: "NO",
     });
     const token = createToken(user.id);
     res.cookie("jwt", token, { maxAge: maxAge * 1000 });
@@ -199,8 +229,6 @@ export const signup = async (req: Request, res: Response) => {
         username: user.username,
         email: user.email,
         role: user.role,
-
-
       },
     });
   } catch (error) {
@@ -212,27 +240,28 @@ export const signup_Not_admin = async (req: Request, res: Response) => {
   const { username, phone_number } = req.body;
   try {
     // Create the user
-    const userTest = await User.findOne({ where: { phone_number, verified: 'YES' } });
+    const userTest = await User.findOne({
+      where: { phone_number, verified: "YES" },
+    });
     console.log("userTest:", phone_number);
-    console.log('Type of Phone Number:', typeof phone_number); // Logs its type
-    
+    console.log("Type of Phone Number:", typeof phone_number); // Logs its type
 
-    if(!userTest){
+    if (!userTest) {
       const user = await User.create({
         username,
         email: "",
         phone_number,
         password_hash: "",
         role: "lesson_seeker",
-        verified: "NO"
+        verified: "NO",
       });
-  
+
       // Generate a token
       const token = createToken(user.id);
-  
+
       // Set the token in cookies
       res.cookie("jwt", token, { maxAge: maxAge * 1000 });
-  
+
       // Return the success response with the user id
       res.status(200).json({
         message: "User created successfully",
@@ -243,13 +272,11 @@ export const signup_Not_admin = async (req: Request, res: Response) => {
         },
         success: 1,
       });
-    }else{
+    } else {
       res.status(200).json({
-        success: 0
-      })
+        success: 0,
+      });
     }
-
-  
   } catch (error) {
     console.log(error);
 
