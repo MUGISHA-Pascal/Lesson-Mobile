@@ -30,7 +30,7 @@ const AddCourse = ({ navigation }) => {
         console.log('File selected:', res);
         setSelectedFile(res.assets[0].name)
         setCourseDetails({ ...courseDetails, file: res });
-        Alert.alert('File Selected', `You selected: ${res.name}`);
+        Alert.alert('File Selected', `You selected: ${res.assets[0].name}`);
      
     } catch (err) {
       console.error('Error picking file:', err);
@@ -67,7 +67,7 @@ const AddCourse = ({ navigation }) => {
     }
 
     try {
-      const response = await axios.post('http://192.168.1.78:4000/courses/add_file', formData, {
+      const response = await axios.post('http://10.12.73.148:4000/courses/add_file', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

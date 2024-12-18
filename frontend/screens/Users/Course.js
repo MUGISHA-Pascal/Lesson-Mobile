@@ -66,7 +66,7 @@ const Course = ({ navigation }) => {
   const renderCourseItem = ({ item }) => (
     <TouchableWithoutFeedback
       onPress={() =>
-        navigation.navigate("Cdescri", { quiz: "Inshamake kuri rino somo", course_id: item.id })
+        navigation.navigate("Cdescri", { quiz: "Inshamake kuri rino somo", course_id: item.id, fileName:item.file })
       }
     >
       <View style={styles.card}>

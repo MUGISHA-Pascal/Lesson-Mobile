@@ -102,10 +102,11 @@ export const Home = () => {
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % slides.length);
     }, 6000);
+    // Cleanup function to clear the interval
     return () => clearInterval(interval);
   }, []);
 
-  // Navigate slides with left and right buttons
+  
   const handleNext = () => {
     setCurrentIndex((currentIndex + 1) % slides.length);
   };

@@ -22,6 +22,7 @@ import ViewQuizzes from '../Major/GetQuizzes';
 import AddQuestions from '../Major/AddQuestions';
 import PerformQuiz from '../Major/DoQuiz';
 import CertificatePage from '../Major/CertificatePage';
+import PDFViewer from '../Major/CoursePdfViewer';
 const CourseInside = ({navigation, route}) => {
   const Stack = createNativeStackNavigator();
   React.useLayoutEffect(() => {
@@ -78,6 +79,9 @@ else if (routeName === `doQuiz`){
 else if (routeName === `Cert`){
   navigation.setOptions({tabBarStyle: {display: 'none'}});
 }
+else if (routeName === `PDFViewer`){
+  navigation.setOptions({tabBarStyle: {display: 'none'}});
+}
     else{
       navigation.setOptions({tabBarStyle: {display: 'block'}});
     }
@@ -104,6 +108,7 @@ else if (routeName === `Cert`){
        <Stack.Screen name='addQuestions' component={AddQuestions}/>
        <Stack.Screen name='doQuiz' component={PerformQuiz}/>
        <Stack.Screen name='Cert' component={CertificatePage}/>
+       <Stack.Screen name='PDFViewer' component={PDFViewer}/>
 
        <Stack.Screen options={{headerShown:true, headerStyle:{backgroundColor:"#1e90ff"}, headerTintColor:"white"}} name='Comments' component={Comments} />
        <Stack.Screen 

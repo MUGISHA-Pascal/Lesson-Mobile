@@ -6,7 +6,7 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "scheme": "Amategeko",
-    
+
     "splash": {
       "image": "./assets/2.png",
       "resizeMode": "contain",
@@ -40,5 +40,6 @@
     "auth": {
       "redirectUrl": "https://auth.expo.io/@batizo/Amategeko"
     }
+    
   }
 }

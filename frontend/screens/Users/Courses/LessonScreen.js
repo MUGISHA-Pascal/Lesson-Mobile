@@ -7,7 +7,11 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 
 import RenderHTML from 'react-native-render-html';
 import Toast from 'react-native-toast-message';
-const CourseScreen = ({ navigation }) => {
+const CourseScreen = ({ navigation, route }) => {
+  const {fileName}=route.params;
+  if(fileName) {
+    console.log(" the file name is ",fileName)
+  }
   const [selectedModule, setSelectedModule] = useState("Module 1");
   const [lessonIndex, setLessonIndex] = useState(0);
   const [progress, setProgress] = useState(0);

@@ -56,7 +56,7 @@ const AdminLogin = ({ navigation }) => {
 
     if (go) {
       try {
-        const response = await axios.post("http://192.168.1.78:4000/auth/login", {
+        const response = await axios.post("http://10.12.73.148:4000/auth/login", {
 
           email,
           password_hash: password,

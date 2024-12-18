@@ -4,7 +4,7 @@ import { Ionicons, MaterialIcons, AntDesign } from '@expo/vector-icons';
 import { AuthContext } from '../../../VAUTH/Auth';
 const CourseDe = ({ route, navigation }) => {
   const {user} = useContext(AuthContext);
-  const { course_id } = route.params;
+  const { course_id,fileName } = route.params;
  useEffect(()=>{
   console.log(course_id)
  },[])
@@ -87,7 +87,7 @@ const CourseDe = ({ route, navigation }) => {
                   </View>
                 </ScrollView>
 
-                <TouchableOpacity onPress={() => navigation.navigate('Lesson')} style={styles.enrollButton}>
+                <TouchableOpacity onPress={() => navigation.navigate('Lesson', {fileName: fileName})} style={styles.enrollButton}>
                   <Text style={styles.enrollButtonText}>Enroll Now</Text>
                 </TouchableOpacity>
 
