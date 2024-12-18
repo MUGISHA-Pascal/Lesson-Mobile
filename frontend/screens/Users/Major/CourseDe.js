@@ -87,11 +87,13 @@ const CourseDe = ({ route, navigation }) => {
                   </View>
                 </ScrollView>
 
+
+                  {/* YOur task is to debug for Navigate to "PDFViewer" screen and debug accordingly for viewing attached pdf file for course */}
                 <TouchableOpacity onPress={() => navigation.navigate('Lesson', {fileName: fileName})} style={styles.enrollButton}>
                   <Text style={styles.enrollButtonText}>Enroll Now</Text>
                 </TouchableOpacity>
 
-                {user.role !== "admin" ? (
+                {user.role === "admin" ? (
                 <View>
                     <Pressable style={styles.enrollButton} onPress={() => navigation.navigate('addQuiz', { course_id: course_id })}>
                     <Text style={styles.enrollButtonText}>+ Quiz</Text>
