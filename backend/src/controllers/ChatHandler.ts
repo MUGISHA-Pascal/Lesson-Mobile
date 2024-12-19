@@ -87,6 +87,7 @@ export const handlingCharts = (io: Server) => {
         });
       }
     });
+    // socket.on("file_message");
   });
 };
 

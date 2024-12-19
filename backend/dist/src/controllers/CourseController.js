@@ -366,7 +366,6 @@ const CourseFileAdding = (req, res) => __awaiter(void 0, void 0, void 0, functio
     try {
         const { userId, courseTitle, category, courseDescription, contentType } = req.body;
         const user = yield User_1.default.findOne({ where: { id: userId } });
-        console.log(userId, courseTitle, category, courseDescription, contentType);
         if (!user || user.role !== "admin") {
             res.status(403).json({ message: "You are not allowed to add courses" });
             return;

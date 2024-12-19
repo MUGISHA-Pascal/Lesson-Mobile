@@ -357,7 +357,6 @@ export const CourseFileAdding = async (req: Request, res: Response) => {
 
     const user = await User.findOne({ where: { id: userId } });
 
-    console.log(userId, courseTitle, category, courseDescription, contentType);
     if (!user || user.role !== "admin") {
       res.status(403).json({ message: "You are not allowed to add courses" });
       return;
