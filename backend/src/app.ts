@@ -15,10 +15,8 @@ import CommentRoutes from "./routes/CommentRoutes";
 dotenv.config();
 
 const app: Express = express();
-app.use(cors());
+app.use(cors({ credentials: true }));
 app.use(bodyParser.json());
-
-
 
 postgresConnectionSequelize
   .authenticate()
@@ -28,7 +26,7 @@ postgresConnectionSequelize
   .catch((error) => {
     console.log(error);
   });
-  postgresConnectionSequelize.sync({alter:true})
+postgresConnectionSequelize.sync({ alter: true });
 app.use("/auth", AuthRoutes);
 app.use("/user", UserRoutes);
 app.use("/courses", CourseRoutes);

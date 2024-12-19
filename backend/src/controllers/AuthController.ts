@@ -99,7 +99,7 @@ export const webAdminLogin = async (req: Request, res: Response) => {
   let { email, password_hash } = req.body;
   try {
     const user = await User.findOne({ where: { email } });
-    if (user?.role !== "admin") {
+    if (user?.role === "admin") {
       if (user) {
         const ismatch = await bcrypt.compare(password_hash, user.password_hash);
         if (ismatch) {
@@ -111,6 +111,7 @@ export const webAdminLogin = async (req: Request, res: Response) => {
               id: user.id,
               username: user.username,
               email: user.email,
+              token: token,
               role: user.role,
             },
           });
@@ -221,7 +222,7 @@ export const signup = async (req: Request, res: Response) => {
       verified: "NO",
     });
     const token = createToken(user.id);
-    res.cookie("jwt", token, { maxAge: maxAge * 1000 });
+    res.cookie("jwt", token, { maxAge: maxAge * 1000, httpOnly: false });
     res.status(200).json({
       message: "user created",
       user: {

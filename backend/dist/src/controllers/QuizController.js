@@ -126,11 +126,11 @@ exports.quizAdding = quizAdding;
  */
 const getQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { course_id } = req.body;
-        const quiz = yield Quiz_1.default.findAll({
+        const { course_id } = req.params;
+        const quizzes = yield Quiz_1.default.findAll({
             where: { course_id },
         });
-        res.status(200).json({ message: "quiz found successfully", quiz });
+        res.status(200).json({ message: "quiz found successfully", quizzes });
     }
     catch (error) {
         console.log(error);
