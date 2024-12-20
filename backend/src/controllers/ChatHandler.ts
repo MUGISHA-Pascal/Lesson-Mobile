@@ -6,17 +6,19 @@ import Message from "../models/Message";
 import Comment from "../models/Comments";
 import { commentUpdate } from "./CommentController";
 import { Op } from "sequelize";
+import path from "path";
+import fs from "fs";
 interface User {
   socketID: string;
 }
 interface SocketInterface extends Socket {
   user?: string;
 }
-export const handlingCharts = (io: Server,) => {
+export const handlingCharts = (io: Server) => {
   io.on("connection", async (socket: SocketInterface) => {
-    socket.on("send_message", async ({ sender, receiver, message,type }) => {
+    socket.on("send_message", async ({ sender, receiver, message, type }) => {
       console.log(sender, receiver, message);
-// console.log(dateWithTime);
+      // console.log(dateWithTime);
 
       try {
         const date = new Date("2024-06-17T14:30:00");
@@ -25,9 +27,8 @@ export const handlingCharts = (io: Server,) => {
           sender,
           receiver,
           message,
-          date:`${date}` ,
-          type
-
+          date: `${date}`,
+          type,
         });
         console.log("the message is saved ", messageSaved);
         io.to(socket.id).emit("server_sent", {
@@ -35,7 +36,9 @@ export const handlingCharts = (io: Server,) => {
           messageType: "sent_message",
         });
       } catch (error) {
-        socket.emit("error", { message: `Error sending the message ${error} ${receiver}` });
+        socket.emit("error", {
+          message: `Error sending the message ${error} ${receiver}`,
+        });
         console.log(error);
       }
     });
@@ -95,31 +98,41 @@ export const handlingCharts = (io: Server,) => {
         });
       }
     });
-    socket.on("last_message", async ({ activeUser,role }) => {
-      console.log("Event 'last_message' received for activeUser ID:", activeUser);
-    
+    socket.on("last_message", async ({ activeUser, role }) => {
+      console.log(
+        "Event 'last_message' received for activeUser ID:",
+        activeUser
+      );
 
-      
       try {
         // Fetch all sub-admins with verified = "YES"
         const subAdmins = await User.findAll({
           where: {
             role: role,
-            verified: { [Op.iLike]: "YES" }, 
+            verified: { [Op.iLike]: "YES" },
           },
         });
         const allUsers = await User.findAll();
-console.log("All Users:", allUsers);
-    
-        console.log("Fetched sub-admins IDs:", subAdmins.map((u) => u.id));
-    
+        console.log("All Users:", allUsers);
+
+        console.log(
+          "Fetched sub-admins IDs:",
+          subAdmins.map((u) => u.id)
+        );
+
         const usersWithLastMessage = await Promise.all(
           subAdmins.map(async (user) => {
             const lastMessage = await Message.findOne({
               where: {
                 [Op.or]: [
-                  { sender: activeUser.toString(), receiver: user.id.toString() },
-                  { sender: user.id.toString(), receiver: activeUser.toString() },
+                  {
+                    sender: activeUser.toString(),
+                    receiver: user.id.toString(),
+                  },
+                  {
+                    sender: user.id.toString(),
+                    receiver: activeUser.toString(),
+                  },
                 ],
               },
               order: [["createdAt", "DESC"]],
@@ -127,21 +140,19 @@ console.log("All Users:", allUsers);
 
             return {
               user: user.id,
-              lastMessage: lastMessage ? lastMessage.message : "No messages yet",
+              lastMessage: lastMessage
+                ? lastMessage.message
+                : "No messages yet",
               timestamp: lastMessage ? lastMessage.date : null,
               username: user.username,
               profilePicture: user.profilePicture,
               sender: lastMessage ? lastMessage.sender : null,
               receiver: lastMessage ? lastMessage.receiver : null,
-              status: user.activeStatus
-
+              status: user.activeStatus,
             };
           })
         );
-          
 
-
-    
         io.to(socket.id).emit("last_message_update", usersWithLastMessage);
       } catch (error) {
         console.error("Error fetching last messages:", error);
@@ -149,24 +160,22 @@ console.log("All Users:", allUsers);
       }
     });
     socket.on("fetch_messages", async ({ sender, receiver }) => {
-
       const senderId = sender.toString(); // Convert sender to string
-const receiverId = receiver.toString(); // Convert receiver to string
+      const receiverId = receiver.toString(); // Convert receiver to string
       try {
         const senderId = sender.toString(); // Convert sender to string
         const receiverId = receiver.toString(); // Convert receiver to string
-        
+
         const messages = await Message.findAll({
           where: {
             [Op.or]: [
               { sender: senderId, receiver: receiverId },
-              { sender: receiverId, receiver: senderId }
-            ]
-
+              { sender: receiverId, receiver: senderId },
+            ],
           },
-          order: [['date', 'ASC']]
+          order: [["date", "ASC"]],
         });
-    
+
         // Send the fetched messages back to the client
         io.to(socket.id).emit("fetched_messages", messages);
       } catch (error) {
@@ -174,14 +183,18 @@ const receiverId = receiver.toString(); // Convert receiver to string
         socket.emit("error", { message: "Error fetching messages" });
       }
     });
-    
+    socket.on("sendFile", async (fileData, receiver, sender) => {
+      const { fileName, fileContent } = fileData;
 
-
-
-   
-    
-    
-    
+      const filePath = path.join(__dirname, "uploads/messages", fileName);
+      fs.writeFileSync(filePath, fileContent, "base64");
+      await Message.create({
+        sender,
+        receiver,
+        message: fileName,
+        fileContent,
+      });
+    });
   });
 };
 

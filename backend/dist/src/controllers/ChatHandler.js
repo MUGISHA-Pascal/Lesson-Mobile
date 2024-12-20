@@ -16,6 +16,8 @@ exports.handlingCharts = void 0;
 const User_1 = __importDefault(require("../models/User"));
 const Message_1 = __importDefault(require("../models/Message"));
 const sequelize_1 = require("sequelize");
+const path_1 = __importDefault(require("path"));
+const fs_1 = __importDefault(require("fs"));
 const handlingCharts = (io) => {
     io.on("connection", (socket) => __awaiter(void 0, void 0, void 0, function* () {
         socket.on("send_message", (_a) => __awaiter(void 0, [_a], void 0, function* ({ sender, receiver, message, type }) {
@@ -28,7 +30,7 @@ const handlingCharts = (io) => {
                     receiver,
                     message,
                     date: `${date}`,
-                    type
+                    type,
                 });
                 console.log("the message is saved ", messageSaved);
                 io.to(socket.id).emit("server_sent", {
@@ -37,7 +39,9 @@ const handlingCharts = (io) => {
                 });
             }
             catch (error) {
-                socket.emit("error", { message: `Error sending the message ${error} ${receiver}` });
+                socket.emit("error", {
+                    message: `Error sending the message ${error} ${receiver}`,
+                });
                 console.log(error);
             }
         }));
@@ -118,21 +122,29 @@ const handlingCharts = (io) => {
                     const lastMessage = yield Message_1.default.findOne({
                         where: {
                             [sequelize_1.Op.or]: [
-                                { sender: activeUser.toString(), receiver: user.id.toString() },
-                                { sender: user.id.toString(), receiver: activeUser.toString() },
+                                {
+                                    sender: activeUser.toString(),
+                                    receiver: user.id.toString(),
+                                },
+                                {
+                                    sender: user.id.toString(),
+                                    receiver: activeUser.toString(),
+                                },
                             ],
                         },
                         order: [["createdAt", "DESC"]],
                     });
                     return {
                         user: user.id,
-                        lastMessage: lastMessage ? lastMessage.message : "No messages yet",
+                        lastMessage: lastMessage
+                            ? lastMessage.message
+                            : "No messages yet",
                         timestamp: lastMessage ? lastMessage.date : null,
                         username: user.username,
                         profilePicture: user.profilePicture,
                         sender: lastMessage ? lastMessage.sender : null,
                         receiver: lastMessage ? lastMessage.receiver : null,
-                        status: user.activeStatus
+                        status: user.activeStatus,
                     };
                 })));
                 io.to(socket.id).emit("last_message_update", usersWithLastMessage);
@@ -152,10 +164,10 @@ const handlingCharts = (io) => {
                     where: {
                         [sequelize_1.Op.or]: [
                             { sender: senderId, receiver: receiverId },
-                            { sender: receiverId, receiver: senderId }
-                        ]
+                            { sender: receiverId, receiver: senderId },
+                        ],
                     },
-                    order: [['date', 'ASC']]
+                    order: [["date", "ASC"]],
                 });
                 // Send the fetched messages back to the client
                 io.to(socket.id).emit("fetched_messages", messages);
@@ -164,6 +176,17 @@ const handlingCharts = (io) => {
                 console.error("Error fetching messages:", error);
                 socket.emit("error", { message: "Error fetching messages" });
             }
+        }));
+        socket.on("sendFile", (fileData, receiver, sender) => __awaiter(void 0, void 0, void 0, function* () {
+            const { fileName, fileContent } = fileData;
+            const filePath = path_1.default.join(__dirname, "uploads/messages", fileName);
+            fs_1.default.writeFileSync(filePath, fileContent, "base64");
+            yield Message_1.default.create({
+                sender,
+                receiver,
+                message: fileName,
+                fileContent,
+            });
         }));
     }));
 };

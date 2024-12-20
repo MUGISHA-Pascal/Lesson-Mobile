@@ -25,12 +25,12 @@ const Message = postgres_1.default.define("Message", {
     seen: {
         type: sequelize_1.DataTypes.BOOLEAN,
         allowNull: false,
-        defaultValue: false
+        defaultValue: false,
     },
     edited: {
         type: sequelize_1.DataTypes.BOOLEAN,
         allowNull: false,
-        defaultValue: false
+        defaultValue: false,
     },
     date: {
         type: sequelize_1.DataTypes.STRING,
@@ -42,8 +42,12 @@ const Message = postgres_1.default.define("Message", {
     },
     type: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: true
-    }
+        allowNull: true,
+    },
+    fileContent: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true,
+    },
 }, {
     timestamps: true,
     createdAt: true,

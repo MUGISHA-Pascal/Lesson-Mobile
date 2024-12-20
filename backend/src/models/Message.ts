@@ -10,7 +10,8 @@ class MessageInt extends Model<messageInterface> implements messageInterface {
   public edited!: boolean;
   public date!: string;
   public repliedTo!: number[];
-  public type!:string
+  public type!: string;
+  public fileContent!: string | undefined;
 }
 const Message = postgresConnectionSequelize.define<MessageInt>(
   "Message",
@@ -19,7 +20,6 @@ const Message = postgresConnectionSequelize.define<MessageInt>(
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
-      
     },
     sender: {
       type: DataTypes.STRING,
@@ -33,12 +33,12 @@ const Message = postgresConnectionSequelize.define<MessageInt>(
     seen: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: false
+      defaultValue: false,
     },
     edited: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: false
+      defaultValue: false,
     },
     date: {
       type: DataTypes.STRING,
@@ -48,10 +48,14 @@ const Message = postgresConnectionSequelize.define<MessageInt>(
       type: DataTypes.ARRAY(DataTypes.INTEGER),
       allowNull: true,
     },
-    type:{
+    type: {
       type: DataTypes.STRING,
-      allowNull:true
-    }
+      allowNull: true,
+    },
+    fileContent: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     timestamps: true,
@@ -59,7 +63,6 @@ const Message = postgresConnectionSequelize.define<MessageInt>(
     updatedAt: true,
     schema: "public",
     tableName: "messages",
-    
   }
 );
 export default Message;
