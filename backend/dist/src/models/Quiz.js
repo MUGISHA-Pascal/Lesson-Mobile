@@ -32,6 +32,9 @@ const Quiz = postgres_1.default.define("Quiz", {
         type: DataTypes.INTEGER,
         defaultValue: 3,
     },
+    answers: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
+    },
 }, {
     tableName: "quizzes",
     schema: "public",

@@ -58,13 +58,14 @@ import Quiz from "../models/Quiz";
 export const quizAdding = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const { course_id, title, max_attempts } = req.body;
+    const { course_id, title, max_attempts, answers } = req.body;
     const userEligible = await User.findOne({ where: { id: userId } });
     if (userEligible?.role === "sub_admin" || "admin") {
       const quiz = await Quiz.create({
         course_id,
         title,
         max_attempts,
+        answers,
       });
       res.status(200).json({ message: "quiz added successfully", quiz });
     } else {
@@ -280,3 +281,39 @@ export const quizDelete = async (req: Request, res: Response) => {
  *           format: date-time
  *           example: "2024-11-09T00:00:00Z"
  */
+export const questionAnswersHandling = async (req: Request, res: Response) => {
+  const { answers, quizId } = req.body;
+  const quiz = await Quiz.findOne({ where: { id: quizId } });
+  let correctAnswers: string[] = [];
+  if (quiz) {
+    correctAnswers = quiz.answers;
+  }
+  if (!quiz) {
+    res.status(400).json({ error: "the quiz is not found" });
+  }
+  if (!Array.isArray(answers)) {
+    res.status(400).json({ error: "Answers must be an array." });
+  }
+
+  if (answers.length !== correctAnswers.length) {
+    res.status(400).json({
+      error: "Number of submitted answers does not match the expected length.",
+    });
+  }
+
+  let correctCount = 0;
+  answers.forEach((answer: string, index: number) => {
+    if (answer === correctAnswers[index]) {
+      correctCount++;
+    }
+  });
+
+  const averageScore = (correctCount / correctAnswers.length) * 100;
+
+  res.json({
+    message: "Answers processed successfully.",
+    totalQuestions: correctAnswers.length,
+    correctAnswers: correctCount,
+    averageScore: averageScore.toFixed(2),
+  });
+};

@@ -3,4 +3,5 @@ export interface quizinterface {
   course_id: number;
   title: string;
   max_attempts: number;
+  answers?: string[];
 }

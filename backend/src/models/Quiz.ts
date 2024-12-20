@@ -9,6 +9,7 @@ class QuizInt extends Model<quizinterface> implements quizinterface {
   public course_id!: number;
   public title!: string;
   public max_attempts!: number;
+  public answers!: string[];
 }
 const Quiz = postgresConnectionSequelize.define<QuizInt>(
   "Quiz",
@@ -35,6 +36,9 @@ const Quiz = postgresConnectionSequelize.define<QuizInt>(
     max_attempts: {
       type: DataTypes.INTEGER,
       defaultValue: 3,
+    },
+    answers: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
     },
   },
   {
