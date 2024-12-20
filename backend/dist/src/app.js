@@ -19,7 +19,7 @@ const QuizRoutes_1 = __importDefault(require("./routes/QuizRoutes"));
 const CommentRoutes_1 = __importDefault(require("./routes/CommentRoutes"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
-app.use((0, cors_1.default)({ credentials: true }));
+app.use((0, cors_1.default)());
 app.use(body_parser_1.default.json());
 postgres_1.postgresConnectionSequelize
     .authenticate()
@@ -29,7 +29,6 @@ postgres_1.postgresConnectionSequelize
     .catch((error) => {
     console.log(error);
 });
-postgres_1.postgresConnectionSequelize.sync({ alter: true });
 app.use("/auth", AuthRoutes_1.default);
 app.use("/user", UserRoutes_1.default);
 app.use("/courses", CourserRoutes_1.default);

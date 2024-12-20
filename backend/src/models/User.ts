@@ -16,6 +16,17 @@ class UserInt extends Model<userInterface> {
   public gender!: string;
   public pin!: number;
   public verified!: string;
+  public activeStatus!: string;
+  public special_offers!: boolean;
+  public sound!: boolean;
+  public vibrate!: boolean;
+  public general_notification!: boolean;
+  public promo_discount!: boolean;
+  public payment_options!: boolean;
+  public app_update!: boolean;
+  public new_service_available!: boolean;
+  public new_tips_available!: boolean;
+  public device_token!: string; 
 }
 
 const User = postgresConnectionSequelize.define<UserInt>(
@@ -29,17 +40,17 @@ const User = postgresConnectionSequelize.define<UserInt>(
     username: {
       type: DataTypes.STRING(50),
       allowNull: false,
-      unique: true,
+      unique: false,
     },
     email: {
       type: DataTypes.STRING(100),
       allowNull: false,
-      unique: true,
+      unique: false,
     },
     phone_number: {
       type: DataTypes.STRING(15),
       allowNull: true,
-      unique: true,
+      unique: false,
     },
     password_hash: {
       type: DataTypes.STRING(255),
@@ -73,6 +84,62 @@ const User = postgresConnectionSequelize.define<UserInt>(
       allowNull: true,
       defaultValue: "NO",
     },
+    activeStatus: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: "No",
+    },
+    special_offers: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
+    },
+    sound: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
+    },
+    vibrate: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    general_notification: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
+    },
+    promo_discount: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    payment_options: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
+    },
+    app_update: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
+    },
+    new_service_available: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    new_tips_available: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    device_token:{
+      type:DataTypes.STRING,
+      allowNull:true
+
+    }
+    
   },
   {
     createdAt: true,

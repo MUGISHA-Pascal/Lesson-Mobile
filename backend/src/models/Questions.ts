@@ -50,3 +50,4 @@ const Question = postgresConnectionSequelize.define<QuestionInt>(
 );
 
 export default Question;
+

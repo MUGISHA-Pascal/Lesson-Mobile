@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import User from "../models/User";
 import fs from "fs";
 import path from "path";
+import Notification from "../models/Notification";
 /**
  * @swagger
  * tags:
@@ -237,7 +238,26 @@ export const fillProfile = async (req: Request, res: Response) => {
     res.status(500).json({ message: error });
   }
 };
+export const updateSetting = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { setting_name, setting_value } = req.body;
 
+    const userUpdated = await User.update(
+      { [setting_name]: setting_value },
+      { where: { id } }
+    );
+
+    if (userUpdated[0] === 0) {
+      res.status(404).json({ message: "User or setting not found." });
+    } else {
+      res.status(200).json({ message: "Setting updated successfully." });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "An error occurred.", error });
+  }
+};
 export const fill = async (req: Request, res: Response) => {
   try {
     const { fullname, nickname,number,id } = req.body;
@@ -253,6 +273,27 @@ export const fill = async (req: Request, res: Response) => {
     res.status(500).json({ message: error });
   }
 };
+export const updateSeenNotification = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+        const userUpdated = await Notification.update(
+      {seen:"Yes"},
+      { where: { receiver: id } }
+    );
+    console.log(userUpdated);
+    res.status(201).json({ user: userUpdated });
+    
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error });
+  }
+};
+
+
+
+
+
+
 
 export const AddPin = async (req: Request, res: Response) => {
   try {
@@ -260,6 +301,50 @@ export const AddPin = async (req: Request, res: Response) => {
     const verified = "YES";
     const userUpdated = await User.update({ pin , verified}, { where: { id } });
     console.log(userUpdated);
+    const currentDate = new Date();
+
+const formattedDate = currentDate.toISOString().slice(0, 10); // YYYY-MM-DD
+const hours = currentDate.getHours(); // Hours (0-23)
+const dateAndHours = `${formattedDate} ${hours}:00`;
+try{
+ await Notification.create({
+        title:"Murakoze kwiyandikisha",
+        description: "Hari impamvu wiyandikishije, tangira nonaha maze wige ibirebanye nibinyabziga",
+        receiver: id,
+        sender:"app",
+        sentdate:dateAndHours
+
+        
+      });
+}catch(error){
+  console.log(error)
+}
+      
+
+      await Notification.create({
+        title:"Murakaze neza kuri applocation ya amategeko",
+        description: "Amategeko app ni application igufasha kwiga ibyerekanye nibinyabiziga byose kubuntu kandi muburyo bworoshye kandi bunoze",
+        receiver: id,
+        sender:"app",
+        sentdate:dateAndHours
+
+      });
+    res.status(201).json({ user: userUpdated });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error });
+  }
+  
+};
+
+
+export const PushNotification = async (req: Request, res: Response) => {
+  try {
+    const { device_token, id } = req.body;
+    // const verified = "YES";
+    const userUpdated = await User.update({ device_token }, { where: { id } });
+    console.log(userUpdated);
+
     res.status(201).json({ user: userUpdated });
   } catch (error) {
     console.log(error);
@@ -272,6 +357,65 @@ export const GetUserById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const user = await User.findByPk(id);
+    if (user) {
+      res.status(201).json({ user });
+    } else {
+      res.status(404).json({ message: "user not found" });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const GetNotificationById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const user = await Notification.findAll({
+      where:{
+         receiver: id
+      }
+    });
+    if (user) {
+      res.status(201).json({ user });
+    } else {
+      res.status(404).json({ message: "notification not found" });
+    }
+
+    console.log(user)
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getNumber_of_unseen_messages = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const unseenCount = await Notification.count({
+      where: {
+        receiver: id,
+        seen:"No"
+      },
+    });
+    if (unseenCount) {
+      res.status(201).json({ unseenCount });
+    } else {
+      res.status(404).json({  unseenCount });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
+export const getMentors = async (req: Request, res: Response) => {
+  try {
+    // const { id } = req.params;
+    const user = await User.findAll({
+      where:{
+        role : "sub_admin"
+      }
+    });
+    
     if (user) {
       res.status(201).json({ user });
     } else {

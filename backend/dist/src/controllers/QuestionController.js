@@ -128,7 +128,7 @@ exports.questionAdding = questionAdding;
  */
 const getQuestions = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { quiz_id } = req.params;
+        const { quiz_id } = req.body;
         const questions = yield Questions_1.default.findAll({
             where: { quiz_id },
         });

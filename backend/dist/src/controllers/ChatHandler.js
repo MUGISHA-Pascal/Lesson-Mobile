@@ -96,7 +96,6 @@ const handlingCharts = (io) => {
                 });
             }
         }));
-        // socket.on("file_message");
     }));
 };
 exports.handlingCharts = handlingCharts;

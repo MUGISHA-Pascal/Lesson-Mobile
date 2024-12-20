@@ -4,9 +4,16 @@ import {
   AdminUserDelete,
   fill,
   fillProfile,
+  getMentors,
+  GetNotificationById,
+  getNumber_of_unseen_messages,
   GetUserById,
   imageRetrival,
   profileUploadController,
+  PushNotification,
+  updateSeenNotification,
+  updateSetting,
+
 } from "../controllers/UserController";
 import upload from "../middlewares/profile";
 
@@ -23,5 +30,14 @@ UserRoutes.put("/fill_profile", fillProfile);
 UserRoutes.put("/fill", fill);
 UserRoutes.put("/add_pin", AddPin);
 UserRoutes.get("/get_user/:id", GetUserById);
+UserRoutes.get("/get_mentor", getMentors);
+UserRoutes.put("/change/:id", updateSetting);
+UserRoutes.get("/number/:id",getNumber_of_unseen_messages)
+UserRoutes.put("/not/:id",updateSeenNotification)
+UserRoutes.get("/notification/:id", GetNotificationById);
+UserRoutes.put("/savetoken", PushNotification);
+
+
+
 export default UserRoutes;
 
