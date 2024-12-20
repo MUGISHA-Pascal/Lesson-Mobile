@@ -6,7 +6,7 @@ class CourseInt extends Model<courseInterface> implements courseInterface {
   public id!: string;
   public title!: string;
   public description!: Text;
-  public content_type!: "text" | "video" | "image";
+  public content_type!: "text" | "video" | "image" | "mixed";
   public created_by!: number;
   public category!: string;
   public is_active!: boolean;
