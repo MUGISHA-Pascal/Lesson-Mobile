@@ -4,7 +4,7 @@ const express_1 = require("express");
 const QuizController_1 = require("../controllers/QuizController");
 const QuizRoutes = (0, express_1.Router)();
 QuizRoutes.post("/add/:userId", QuizController_1.quizAdding);
-QuizRoutes.get("/", QuizController_1.getQuiz);
+QuizRoutes.get("/:course_id", QuizController_1.getQuiz);
 QuizRoutes.put("/update/:userId", QuizController_1.quizUpdate);
 QuizRoutes.delete("/delete/:quizId", QuizController_1.quizDelete);
 exports.default = QuizRoutes;

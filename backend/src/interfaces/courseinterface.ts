@@ -8,4 +8,5 @@ export interface courseInterface {
   file?: string;
   is_active?: boolean;
   profile_image?: string;
+  module: number;
 }

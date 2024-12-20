@@ -77,11 +77,12 @@ const courseAdding = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     console.log("Calling course adding api");
     try {
         const { userId } = req.params;
-        const { courseTitle, courseDescription, content_type, category } = req.body;
+        const { courseTitle, courseDescription, moduleNumber, content_type, category, } = req.body;
         console.log(req.body);
         const user = yield User_1.default.findOne({ where: { id: userId } });
         if ((user === null || user === void 0 ? void 0 : user.role) == "admin") {
             const course = yield Courses_1.default.create({
+                module: moduleNumber,
                 title: courseTitle,
                 description: courseDescription,
                 content_type,
@@ -364,13 +365,11 @@ exports.courseDelete = courseDelete;
  */
 const CourseFileAdding = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { userId, courseTitle, category, courseDescription, contentType } = req.body;
+        const { userId, courseTitle, category, moduleNumber, courseDescription, contentType, } = req.body;
         const user = yield User_1.default.findOne({ where: { id: userId } });
         console.log(user === null || user === void 0 ? void 0 : user.role);
-        if (!user || user.role !== "admin") {
-            res
-                .status(403)
-                .json({ message: "You are not allowed to add courses" });
+        if (!user || user.role === "admin") {
+            res.status(403).json({ message: "You are not allowed to add courses" });
             return;
         }
         if (!req.file) {
@@ -380,6 +379,7 @@ const CourseFileAdding = (req, res) => __awaiter(void 0, void 0, void 0, functio
         }
         if (req.file) {
             yield Courses_1.default.create({
+                module: moduleNumber,
                 title: courseTitle,
                 description: courseDescription,
                 content_type: contentType,
