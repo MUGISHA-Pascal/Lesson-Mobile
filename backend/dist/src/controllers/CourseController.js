@@ -12,11 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.courseimageRetrival = exports.courseprofileUploadController = exports.GetCourseByCategory = exports.fileRetrival = exports.CourseFileAdding = exports.courseDelete = exports.courseUpdate = exports.getCourses = exports.courseAdding = void 0;
+exports.courseTakenHandling = exports.courseimageRetrival = exports.courseprofileUploadController = exports.GetCourseByCategory = exports.fileRetrival = exports.CourseFileAdding = exports.courseDelete = exports.courseUpdate = exports.getCourses = exports.courseAdding = void 0;
 const User_1 = __importDefault(require("../models/User"));
 const Courses_1 = __importDefault(require("../models/Courses"));
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
+const CourseTaken_1 = __importDefault(require("../models/CourseTaken"));
 /**
  * @swagger
  * tags:
@@ -458,6 +459,40 @@ const courseimageRetrival = (req, res) => __awaiter(void 0, void 0, void 0, func
     });
 });
 exports.courseimageRetrival = courseimageRetrival;
+const courseTakenHandling = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId } = req.params;
+    const { courseId } = req.body;
+    if (!courseId) {
+        res
+            .status(400)
+            .json({ error: "courseId is required in the request body." });
+        return;
+    }
+    try {
+        const courseTaken = yield CourseTaken_1.default.findOne({ where: { userId } });
+        if (!courseTaken) {
+            res.status(404).json({
+                error: "User not found or no courses associated with this user.",
+            });
+            return;
+        }
+        const updatedCourseIds = Array.from(new Set([...((courseTaken === null || courseTaken === void 0 ? void 0 : courseTaken.courseIds) || []), courseId]));
+        yield (courseTaken === null || courseTaken === void 0 ? void 0 : courseTaken.update({ courseIds: updatedCourseIds }));
+        res.status(200).json({
+            message: "Course ID added successfully.",
+            courseIds: updatedCourseIds,
+        });
+        return;
+    }
+    catch (error) {
+        console.error("Error adding course ID:", error);
+        res
+            .status(500)
+            .json({ error: "An error occurred while adding the course ID." });
+        return;
+    }
+});
+exports.courseTakenHandling = courseTakenHandling;
 /**
  * @openapi
  * /courses/add_file:

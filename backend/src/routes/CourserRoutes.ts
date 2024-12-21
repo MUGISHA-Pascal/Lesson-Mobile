@@ -4,6 +4,7 @@ import {
   courseDelete,
   courseimageRetrival,
   courseprofileUploadController,
+  courseTakenHandling,
   courseUpdate,
   fileRetrival,
   GetCourseByCategory,
@@ -27,4 +28,5 @@ CourseRoutes.put(
   courseprofileUploadController
 );
 CourseRoutes.get("/image/:ImageName", courseimageRetrival);
+CourseRoutes.put("/course_taken_handle", courseTakenHandling);
 export default CourseRoutes;

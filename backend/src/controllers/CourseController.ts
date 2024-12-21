@@ -3,6 +3,7 @@ import User from "../models/User";
 import Course from "../models/Courses";
 import fs from "fs";
 import path from "path";
+import CourseTaken from "../models/CourseTaken";
 /**
  * @swagger
  * tags:
@@ -455,6 +456,47 @@ export const courseimageRetrival = async (req: Request, res: Response) => {
     res.sendFile(filePath);
   });
 };
+export const courseTakenHandling = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  const { courseId } = req.body;
+
+  if (!courseId) {
+    res
+      .status(400)
+      .json({ error: "courseId is required in the request body." });
+    return;
+  }
+
+  try {
+    const courseTaken = await CourseTaken.findOne({ where: { userId } });
+
+    if (!courseTaken) {
+      res.status(404).json({
+        error: "User not found or no courses associated with this user.",
+      });
+      return;
+    }
+
+    const updatedCourseIds = Array.from(
+      new Set([...(courseTaken?.courseIds || []), courseId])
+    );
+
+    await courseTaken?.update({ courseIds: updatedCourseIds });
+
+    res.status(200).json({
+      message: "Course ID added successfully.",
+      courseIds: updatedCourseIds,
+    });
+    return;
+  } catch (error) {
+    console.error("Error adding course ID:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while adding the course ID." });
+    return;
+  }
+};
+
 /**
  * @openapi
  * /courses/add_file:

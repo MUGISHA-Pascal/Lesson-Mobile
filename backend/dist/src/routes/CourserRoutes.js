@@ -18,4 +18,5 @@ CourseRoutes.post("/add_file", CourseUpload_1.default.single("file"), CourseCont
 CourseRoutes.get("/get_courses/:category", CourseController_1.GetCourseByCategory);
 CourseRoutes.put("/upload_profile/:id", profile_1.default.single("ProfilePicture"), CourseController_1.courseprofileUploadController);
 CourseRoutes.get("/image/:ImageName", CourseController_1.courseimageRetrival);
+CourseRoutes.put("/course_taken_handle", CourseController_1.courseTakenHandling);
 exports.default = CourseRoutes;
