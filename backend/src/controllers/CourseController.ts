@@ -4,6 +4,7 @@ import Course from "../models/Courses";
 import fs from "fs";
 import path from "path";
 import CourseTaken from "../models/CourseTaken";
+import BookMark from "../models/BookMark";
 /**
  * @swagger
  * tags:
@@ -496,7 +497,48 @@ export const courseTakenHandling = async (req: Request, res: Response) => {
     return;
   }
 };
+export const BookMarkHandling = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  const { courseId } = req.body;
 
+  if (!courseId) {
+    res
+      .status(400)
+      .json({ error: "courseId is required in the request body." });
+    return;
+  }
+
+  try {
+    let bookmark = await BookMark.findOne({ where: { userId } });
+
+    if (!bookmark) {
+      bookmark = await BookMark.create({
+        userId: Number(userId),
+        courseIds: [courseId],
+      });
+    } else {
+      const updatedCourseIds = Array.from(
+        new Set([...(bookmark.courseIds || []), courseId])
+      );
+
+      await bookmark.update({ courseIds: updatedCourseIds });
+    }
+
+    res.status(200).json({
+      message: "Course ID bookmarked successfully.",
+      bookmark,
+    });
+    return;
+  } catch (error) {
+    console.error("Error adding course to bookmarks:", error);
+    res
+      .status(500)
+      .json({
+        error: "An error occurred while adding the course to bookmarks.",
+      });
+    return;
+  }
+};
 /**
  * @openapi
  * /courses/add_file:

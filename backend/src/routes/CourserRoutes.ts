@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  BookMarkHandling,
   courseAdding,
   courseDelete,
   courseimageRetrival,
@@ -28,5 +29,6 @@ CourseRoutes.put(
   courseprofileUploadController
 );
 CourseRoutes.get("/image/:ImageName", courseimageRetrival);
-CourseRoutes.put("/course_taken_handle", courseTakenHandling);
+CourseRoutes.put("/course_taken_handle/:userId", courseTakenHandling);
+CourseRoutes.put("/bookmark/:userId", BookMarkHandling);
 export default CourseRoutes;

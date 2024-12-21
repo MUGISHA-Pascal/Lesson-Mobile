@@ -12,12 +12,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.courseTakenHandling = exports.courseimageRetrival = exports.courseprofileUploadController = exports.GetCourseByCategory = exports.fileRetrival = exports.CourseFileAdding = exports.courseDelete = exports.courseUpdate = exports.getCourses = exports.courseAdding = void 0;
+exports.BookMarkHandling = exports.courseTakenHandling = exports.courseimageRetrival = exports.courseprofileUploadController = exports.GetCourseByCategory = exports.fileRetrival = exports.CourseFileAdding = exports.courseDelete = exports.courseUpdate = exports.getCourses = exports.courseAdding = void 0;
 const User_1 = __importDefault(require("../models/User"));
 const Courses_1 = __importDefault(require("../models/Courses"));
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const CourseTaken_1 = __importDefault(require("../models/CourseTaken"));
+const BookMark_1 = __importDefault(require("../models/BookMark"));
 /**
  * @swagger
  * tags:
@@ -493,6 +494,44 @@ const courseTakenHandling = (req, res) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.courseTakenHandling = courseTakenHandling;
+const BookMarkHandling = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId } = req.params;
+    const { courseId } = req.body;
+    if (!courseId) {
+        res
+            .status(400)
+            .json({ error: "courseId is required in the request body." });
+        return;
+    }
+    try {
+        let bookmark = yield BookMark_1.default.findOne({ where: { userId } });
+        if (!bookmark) {
+            bookmark = yield BookMark_1.default.create({
+                userId: Number(userId),
+                courseIds: [courseId],
+            });
+        }
+        else {
+            const updatedCourseIds = Array.from(new Set([...(bookmark.courseIds || []), courseId]));
+            yield bookmark.update({ courseIds: updatedCourseIds });
+        }
+        res.status(200).json({
+            message: "Course ID bookmarked successfully.",
+            bookmark,
+        });
+        return;
+    }
+    catch (error) {
+        console.error("Error adding course to bookmarks:", error);
+        res
+            .status(500)
+            .json({
+            error: "An error occurred while adding the course to bookmarks.",
+        });
+        return;
+    }
+});
+exports.BookMarkHandling = BookMarkHandling;
 /**
  * @openapi
  * /courses/add_file:
