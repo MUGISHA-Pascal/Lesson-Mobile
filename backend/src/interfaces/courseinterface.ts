@@ -8,7 +8,7 @@ export interface courseInterface {
   file?: string;
   is_active?: boolean;
   profile_image?: string;
-  module: number;
+  module: number[];
   userCount?: number;
   ratingAverage?: number;
   ratingCount?: number;
