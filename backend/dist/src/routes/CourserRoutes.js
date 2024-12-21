@@ -22,4 +22,7 @@ CourseRoutes.put("/course_taken_handle/:userId", CourseController_1.courseTakenH
 CourseRoutes.put("/bookmark/:userId", CourseController_1.BookMarkHandling);
 CourseRoutes.put("/user_increment/:courseId", CourseController_1.userIncrement);
 CourseRoutes.get("/descending_retrival", CourseController_1.CourseRetrivalBasingOnUserCount);
+CourseRoutes.get("/descending_retrival_category/:category", CourseController_1.CourseRetrievalByCategoryAndUserCount);
+CourseRoutes.get("/rating_retrival/:id", CourseController_1.RatingRetrieval);
+CourseRoutes.post("/rating_update/:id", CourseController_1.ratingUpdate);
 exports.default = CourseRoutes;

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CourseRetrivalBasingOnUserCount = exports.userIncrement = exports.BookMarkHandling = exports.courseTakenHandling = exports.courseimageRetrival = exports.courseprofileUploadController = exports.GetCourseByCategory = exports.fileRetrival = exports.CourseFileAdding = exports.courseDelete = exports.courseUpdate = exports.getCourses = exports.courseAdding = void 0;
+exports.RatingRetrieval = exports.ratingUpdate = exports.CourseRetrievalByCategoryAndUserCount = exports.CourseRetrivalBasingOnUserCount = exports.userIncrement = exports.BookMarkHandling = exports.courseTakenHandling = exports.courseimageRetrival = exports.courseprofileUploadController = exports.GetCourseByCategory = exports.fileRetrival = exports.CourseFileAdding = exports.courseDelete = exports.courseUpdate = exports.getCourses = exports.courseAdding = void 0;
 const User_1 = __importDefault(require("../models/User"));
 const Courses_1 = __importDefault(require("../models/Courses"));
 const fs_1 = __importDefault(require("fs"));
@@ -575,6 +575,101 @@ const CourseRetrivalBasingOnUserCount = (req, res) => __awaiter(void 0, void 0, 
     }
 });
 exports.CourseRetrivalBasingOnUserCount = CourseRetrivalBasingOnUserCount;
+const CourseRetrievalByCategoryAndUserCount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { category } = req.params;
+        if (!category) {
+            res.status(400).json({
+                error: "Category is required to filter courses.",
+            });
+            return;
+        }
+        const courses = yield Courses_1.default.findAll({
+            where: { category },
+            order: [["userCount", "DESC"]],
+        });
+        if (courses.length === 0) {
+            res.status(404).json({
+                message: `No courses found for category: ${category}`,
+            });
+            return;
+        }
+        res.status(200).json({
+            message: `Courses retrieved successfully for category: ${category}`,
+            courses,
+        });
+        return;
+    }
+    catch (error) {
+        console.error("Error fetching courses:", error);
+        res.status(500).json({
+            error: "An error occurred while retrieving courses.",
+        });
+        return;
+    }
+});
+exports.CourseRetrievalByCategoryAndUserCount = CourseRetrievalByCategoryAndUserCount;
+const ratingUpdate = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const { rating } = req.body;
+    if (!rating || typeof rating !== "number" || rating < 1 || rating > 5) {
+        res
+            .status(400)
+            .json({ message: "Rating must be a number between 1 and 5." });
+        return;
+    }
+    try {
+        const course = yield Courses_1.default.findByPk(id);
+        if (!course) {
+            res.status(404).json({ message: "Course not found." });
+            return;
+        }
+        const currentRatingCount = course.ratingCount || 0;
+        const currentRatingAverage = course.ratingAverage || 0;
+        const newRatingCount = currentRatingCount + 1;
+        const newRatingAverage = (currentRatingAverage * currentRatingCount + rating) / newRatingCount;
+        course.ratingCount = newRatingCount;
+        course.ratingAverage = newRatingAverage;
+        yield course.save();
+        res.status(200).json({
+            message: "Rating updated successfully.",
+            ratingAverage: course.ratingAverage,
+            ratingCount: course.ratingCount,
+        });
+        return;
+    }
+    catch (error) {
+        console.error(error);
+        res
+            .status(500)
+            .json({ message: "An error occurred while rating the course." });
+        return;
+    }
+});
+exports.ratingUpdate = ratingUpdate;
+const RatingRetrieval = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    try {
+        const course = yield Courses_1.default.findByPk(id);
+        if (!course) {
+            res.status(404).json({ message: "Course not found." });
+            return;
+        }
+        res.status(200).json({
+            ratingAverage: course.ratingAverage || 0,
+            ratingCount: course.ratingCount || 0,
+        });
+        return;
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: "An error occurred while fetching the course ratings.",
+        });
+        return;
+    }
+});
+exports.RatingRetrieval = RatingRetrieval;
 /**
  * @openapi
  * /courses/add_file:

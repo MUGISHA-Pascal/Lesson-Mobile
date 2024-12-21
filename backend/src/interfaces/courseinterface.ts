@@ -10,4 +10,6 @@ export interface courseInterface {
   profile_image?: string;
   module: number;
   userCount?: number;
+  ratingAverage?: number;
+  ratingCount?: number;
 }

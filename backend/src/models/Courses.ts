@@ -14,6 +14,8 @@ class CourseInt extends Model<courseInterface> implements courseInterface {
   public file!: string;
   public profile_image!: string;
   public userCount?: number | undefined;
+  public ratingAverage?: number | undefined;
+  public ratingCount?: number | undefined;
 }
 const Course = postgresConnectionSequelize.define<CourseInt>(
   "Course",
@@ -66,6 +68,14 @@ const Course = postgresConnectionSequelize.define<CourseInt>(
       allowNull: true,
     },
     userCount: {
+      type: DataTypes.NUMBER,
+      allowNull: true,
+    },
+    ratingAverage: {
+      type: DataTypes.NUMBER,
+      allowNull: true,
+    },
+    ratingCount: {
       type: DataTypes.NUMBER,
       allowNull: true,
     },

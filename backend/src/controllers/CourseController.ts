@@ -587,6 +587,112 @@ export const CourseRetrivalBasingOnUserCount = async (
     return;
   }
 };
+export const CourseRetrievalByCategoryAndUserCount = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { category } = req.params;
+
+    if (!category) {
+      res.status(400).json({
+        error: "Category is required to filter courses.",
+      });
+      return;
+    }
+
+    const courses = await Course.findAll({
+      where: { category },
+      order: [["userCount", "DESC"]],
+    });
+
+    if (courses.length === 0) {
+      res.status(404).json({
+        message: `No courses found for category: ${category}`,
+      });
+      return;
+    }
+
+    res.status(200).json({
+      message: `Courses retrieved successfully for category: ${category}`,
+      courses,
+    });
+    return;
+  } catch (error) {
+    console.error("Error fetching courses:", error);
+    res.status(500).json({
+      error: "An error occurred while retrieving courses.",
+    });
+    return;
+  }
+};
+export const ratingUpdate = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { rating } = req.body;
+
+  if (!rating || typeof rating !== "number" || rating < 1 || rating > 5) {
+    res
+      .status(400)
+      .json({ message: "Rating must be a number between 1 and 5." });
+    return;
+  }
+
+  try {
+    const course = await Course.findByPk(id);
+    if (!course) {
+      res.status(404).json({ message: "Course not found." });
+      return;
+    }
+
+    const currentRatingCount = course.ratingCount || 0;
+    const currentRatingAverage = course.ratingAverage || 0;
+
+    const newRatingCount = currentRatingCount + 1;
+    const newRatingAverage =
+      (currentRatingAverage * currentRatingCount + rating) / newRatingCount;
+
+    course.ratingCount = newRatingCount;
+    course.ratingAverage = newRatingAverage;
+
+    await course.save();
+
+    res.status(200).json({
+      message: "Rating updated successfully.",
+      ratingAverage: course.ratingAverage,
+      ratingCount: course.ratingCount,
+    });
+    return;
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "An error occurred while rating the course." });
+    return;
+  }
+};
+
+export const RatingRetrieval = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const course = await Course.findByPk(id);
+    if (!course) {
+      res.status(404).json({ message: "Course not found." });
+      return;
+    }
+
+    res.status(200).json({
+      ratingAverage: course.ratingAverage || 0,
+      ratingCount: course.ratingCount || 0,
+    });
+    return;
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "An error occurred while fetching the course ratings.",
+    });
+    return;
+  }
+};
 /**
  * @openapi
  * /courses/add_file:

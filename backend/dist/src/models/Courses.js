@@ -59,6 +59,14 @@ const Course = postgres_1.default.define("Course", {
         type: sequelize_1.DataTypes.NUMBER,
         allowNull: true,
     },
+    ratingAverage: {
+        type: sequelize_1.DataTypes.NUMBER,
+        allowNull: true,
+    },
+    ratingCount: {
+        type: sequelize_1.DataTypes.NUMBER,
+        allowNull: true,
+    },
 }, {
     createdAt: true,
     updatedAt: true,
