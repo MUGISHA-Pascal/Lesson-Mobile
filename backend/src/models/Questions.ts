@@ -9,7 +9,8 @@ class QuestionInt
 {
   public id!: number;
   public quiz_id!: number;
-  public question_text!: Text;
+  public question_title!: string;
+  public question_choices!: string[];
   public correct_answer!: Text;
 }
 
@@ -31,12 +32,16 @@ const Question = postgresConnectionSequelize.define<QuestionInt>(
       onUpdate: "NO ACTION",
       onDelete: "CASCADE",
     },
-    question_text: {
-      type: DataTypes.TEXT,
+    question_title: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
     correct_answer: {
       type: DataTypes.TEXT,
+      allowNull: false,
+    },
+    question_choices: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: false,
     },
   },
@@ -50,4 +55,3 @@ const Question = postgresConnectionSequelize.define<QuestionInt>(
 );
 
 export default Question;
-

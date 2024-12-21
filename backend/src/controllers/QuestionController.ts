@@ -58,12 +58,14 @@ import Question from "../models/Questions";
 export const questionAdding = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const { quiz_id, question_text, correct_answer } = req.body;
+    const { quiz_id, question_title, question_choices, correct_answer } =
+      req.body;
     const userEligible = await User.findOne({ where: { id: userId } });
     if (userEligible?.role === "sub_admin" || "admin") {
       const question = await Question.create({
         quiz_id,
-        question_text,
+        question_title,
+        question_choices,
         correct_answer,
       });
       res
@@ -178,11 +180,17 @@ export const getQuestions = async (req: Request, res: Response) => {
 export const questionUpdate = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const { quiz_id, question_text, correct_answer, questionId } = req.body;
+    const {
+      quiz_id,
+      question_title,
+      question_choices,
+      correct_answer,
+      questionId,
+    } = req.body;
     const userEligible = await User.findOne({ where: { id: userId } });
     if (userEligible?.role === "sub_admin" || "admin") {
       const updatedQuestion = await Question.update(
-        { question_text, correct_answer },
+        { question_choices, correct_answer, question_title },
         { where: { id: questionId, quiz_id } }
       );
       res

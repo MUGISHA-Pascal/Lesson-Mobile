@@ -71,12 +71,13 @@ const Questions_1 = __importDefault(require("../models/Questions"));
 const questionAdding = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userId } = req.params;
-        const { quiz_id, question_text, correct_answer } = req.body;
+        const { quiz_id, question_title, question_choices, correct_answer } = req.body;
         const userEligible = yield User_1.default.findOne({ where: { id: userId } });
         if ((userEligible === null || userEligible === void 0 ? void 0 : userEligible.role) === "sub_admin" || "admin") {
             const question = yield Questions_1.default.create({
                 quiz_id,
-                question_text,
+                question_title,
+                question_choices,
                 correct_answer,
             });
             res
@@ -195,10 +196,10 @@ exports.getQuestions = getQuestions;
 const questionUpdate = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userId } = req.params;
-        const { quiz_id, question_text, correct_answer, questionId } = req.body;
+        const { quiz_id, question_title, question_choices, correct_answer, questionId, } = req.body;
         const userEligible = yield User_1.default.findOne({ where: { id: userId } });
         if ((userEligible === null || userEligible === void 0 ? void 0 : userEligible.role) === "sub_admin" || "admin") {
-            const updatedQuestion = yield Questions_1.default.update({ question_text, correct_answer }, { where: { id: questionId, quiz_id } });
+            const updatedQuestion = yield Questions_1.default.update({ question_choices, correct_answer, question_title }, { where: { id: questionId, quiz_id } });
             res
                 .status(200)
                 .json({ message: "question updated successfully", updatedQuestion });

@@ -24,12 +24,16 @@ const Question = postgres_1.default.define("Question", {
         onUpdate: "NO ACTION",
         onDelete: "CASCADE",
     },
-    question_text: {
-        type: DataTypes.TEXT,
+    question_title: {
+        type: DataTypes.STRING,
         allowNull: false,
     },
     correct_answer: {
         type: DataTypes.TEXT,
+        allowNull: false,
+    },
+    question_choices: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
         allowNull: false,
     },
 }, {
