@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BookMarkHandling = exports.courseTakenHandling = exports.courseimageRetrival = exports.courseprofileUploadController = exports.GetCourseByCategory = exports.fileRetrival = exports.CourseFileAdding = exports.courseDelete = exports.courseUpdate = exports.getCourses = exports.courseAdding = void 0;
+exports.CourseRetrivalBasingOnUserCount = exports.userIncrement = exports.BookMarkHandling = exports.courseTakenHandling = exports.courseimageRetrival = exports.courseprofileUploadController = exports.GetCourseByCategory = exports.fileRetrival = exports.CourseFileAdding = exports.courseDelete = exports.courseUpdate = exports.getCourses = exports.courseAdding = void 0;
 const User_1 = __importDefault(require("../models/User"));
 const Courses_1 = __importDefault(require("../models/Courses"));
 const fs_1 = __importDefault(require("fs"));
@@ -523,15 +523,58 @@ const BookMarkHandling = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
     catch (error) {
         console.error("Error adding course to bookmarks:", error);
-        res
-            .status(500)
-            .json({
+        res.status(500).json({
             error: "An error occurred while adding the course to bookmarks.",
         });
         return;
     }
 });
 exports.BookMarkHandling = BookMarkHandling;
+const userIncrement = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { courseId } = req.params;
+    try {
+        const course = yield Courses_1.default.findByPk(courseId);
+        if (!course) {
+            res.status(404).json({ error: "Course not found." });
+            return;
+        }
+        const newUserCount = (course.userCount || 0) + 1;
+        yield course.update({ userCount: newUserCount });
+        res.status(200).json({
+            message: "User count incremented successfully.",
+            course,
+        });
+        return;
+    }
+    catch (error) {
+        console.error("Error incrementing user count:", error);
+        res
+            .status(500)
+            .json({ error: "An error occurred while incrementing the user count." });
+        return;
+    }
+});
+exports.userIncrement = userIncrement;
+const CourseRetrivalBasingOnUserCount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const courses = yield Courses_1.default.findAll({
+            order: [["userCount", "DESC"]],
+        });
+        res.status(200).json({
+            message: "Courses retrieved successfully.",
+            courses,
+        });
+        return;
+    }
+    catch (error) {
+        console.error("Error fetching courses:", error);
+        res
+            .status(500)
+            .json({ error: "An error occurred while retrieving courses." });
+        return;
+    }
+});
+exports.CourseRetrivalBasingOnUserCount = CourseRetrivalBasingOnUserCount;
 /**
  * @openapi
  * /courses/add_file:

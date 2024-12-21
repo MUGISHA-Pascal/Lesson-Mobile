@@ -531,11 +531,59 @@ export const BookMarkHandling = async (req: Request, res: Response) => {
     return;
   } catch (error) {
     console.error("Error adding course to bookmarks:", error);
+    res.status(500).json({
+      error: "An error occurred while adding the course to bookmarks.",
+    });
+    return;
+  }
+};
+export const userIncrement = async (req: Request, res: Response) => {
+  const { courseId } = req.params;
+
+  try {
+    const course = await Course.findByPk(courseId);
+
+    if (!course) {
+      res.status(404).json({ error: "Course not found." });
+      return;
+    }
+
+    const newUserCount = (course.userCount || 0) + 1;
+
+    await course.update({ userCount: newUserCount });
+
+    res.status(200).json({
+      message: "User count incremented successfully.",
+      course,
+    });
+    return;
+  } catch (error) {
+    console.error("Error incrementing user count:", error);
     res
       .status(500)
-      .json({
-        error: "An error occurred while adding the course to bookmarks.",
-      });
+      .json({ error: "An error occurred while incrementing the user count." });
+    return;
+  }
+};
+export const CourseRetrivalBasingOnUserCount = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const courses = await Course.findAll({
+      order: [["userCount", "DESC"]],
+    });
+
+    res.status(200).json({
+      message: "Courses retrieved successfully.",
+      courses,
+    });
+    return;
+  } catch (error) {
+    console.error("Error fetching courses:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while retrieving courses." });
     return;
   }
 };

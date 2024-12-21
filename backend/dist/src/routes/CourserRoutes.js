@@ -20,4 +20,6 @@ CourseRoutes.put("/upload_profile/:id", profile_1.default.single("ProfilePicture
 CourseRoutes.get("/image/:ImageName", CourseController_1.courseimageRetrival);
 CourseRoutes.put("/course_taken_handle/:userId", CourseController_1.courseTakenHandling);
 CourseRoutes.put("/bookmark/:userId", CourseController_1.BookMarkHandling);
+CourseRoutes.put("/user_increment/:courseId", CourseController_1.userIncrement);
+CourseRoutes.get("/descending_retrival", CourseController_1.CourseRetrivalBasingOnUserCount);
 exports.default = CourseRoutes;

@@ -9,4 +9,5 @@ export interface courseInterface {
   is_active?: boolean;
   profile_image?: string;
   module: number;
+  userCount?: number;
 }

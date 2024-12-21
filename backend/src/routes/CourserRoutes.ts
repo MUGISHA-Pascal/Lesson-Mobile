@@ -5,11 +5,13 @@ import {
   courseDelete,
   courseimageRetrival,
   courseprofileUploadController,
+  CourseRetrivalBasingOnUserCount,
   courseTakenHandling,
   courseUpdate,
   fileRetrival,
   GetCourseByCategory,
   getCourses,
+  userIncrement,
 } from "../controllers/CourseController";
 import { CourseFileAdding } from "../controllers/CourseController";
 import CourseUpload from "../middlewares/CourseUpload";
@@ -31,4 +33,6 @@ CourseRoutes.put(
 CourseRoutes.get("/image/:ImageName", courseimageRetrival);
 CourseRoutes.put("/course_taken_handle/:userId", courseTakenHandling);
 CourseRoutes.put("/bookmark/:userId", BookMarkHandling);
+CourseRoutes.put("/user_increment/:courseId", userIncrement);
+CourseRoutes.get("/descending_retrival", CourseRetrivalBasingOnUserCount);
 export default CourseRoutes;

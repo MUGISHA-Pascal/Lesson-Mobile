@@ -55,6 +55,10 @@ const Course = postgres_1.default.define("Course", {
         type: sequelize_1.DataTypes.NUMBER,
         allowNull: true,
     },
+    userCount: {
+        type: sequelize_1.DataTypes.NUMBER,
+        allowNull: true,
+    },
 }, {
     createdAt: true,
     updatedAt: true,
