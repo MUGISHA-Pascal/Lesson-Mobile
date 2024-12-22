@@ -11,14 +11,7 @@ const Module = postgres_1.default.define("Module", {
     id: {
         type: sequelize_1.DataTypes.NUMBER,
         allowNull: false,
-    },
-    title: {
-        type: sequelize_1.DataTypes.STRING,
-    },
-    description: {
-        type: sequelize_1.DataTypes.STRING,
-    },
-    lessonIds: {
-        type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.NUMBER).dialectTypes,
+        autoIncrement: true,
     },
 });
+exports.default = Module;

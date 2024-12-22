@@ -1,29 +1,19 @@
 import { DataTypes, Model } from "sequelize";
-import { moduleInterface } from "../interfaces/mouleInterface";
+import { moduleInterface } from "../interfaces/moduleInterface";
 import postgresConnectionSequelize from "../config/postgres";
 
 class ModuleInt extends Model<moduleInterface> implements moduleInterface {
   public id!: number;
-  public title!: string;
-  public description!: string;
-  public lessonIds!: number[];
 }
-const Module = postgresConnectionSequelize.define(
+const Module = postgresConnectionSequelize.define<ModuleInt>(
   "Module",
 
   {
     id: {
       type: DataTypes.NUMBER,
       allowNull: false,
-    },
-    title: {
-      type: DataTypes.STRING,
-    },
-    description: {
-      type: DataTypes.STRING,
-    },
-    lessonIds: {
-      type: DataTypes.ARRAY(DataTypes.NUMBER).dialectTypes,
+      autoIncrement: true,
     },
   }
 );
+export default Module;
