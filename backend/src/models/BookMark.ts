@@ -10,11 +10,12 @@ class BookMarkInt
   public courseIds!: string[];
 }
 
+
 const BookMark = postgresConnectionSequelize.define<BookMarkInt>(
   "BookMark",
   {
     userId: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     courseIds: {

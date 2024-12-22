@@ -14,7 +14,7 @@ const CourseTaken = postgresConnectionSequelize.define<CourseTakenInt>(
   "CourseTaken",
   {
     userId: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     courseIds: {

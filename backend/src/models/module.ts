@@ -13,17 +13,17 @@ const Module = postgresConnectionSequelize.define<ModuleInt>(
 
   {
     id: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
     },
     moduleNumber: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     courseId: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       references: {
         key: "id",
         model: Course,

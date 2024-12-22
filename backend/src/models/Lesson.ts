@@ -14,7 +14,7 @@ const Lesson = postgresConnectionSequelize.define<LessonInt>(
   "Lesson",
   {
     id: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
@@ -27,7 +27,7 @@ const Lesson = postgresConnectionSequelize.define<LessonInt>(
       type: DataTypes.STRING,
     },
     moduleId: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       references: {
         key: "id",
         model: Module,

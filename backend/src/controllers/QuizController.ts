@@ -254,6 +254,7 @@ export const quizDelete = async (req: Request, res: Response) => {
     console.log(error);
   }
 };
+
 /**
  * @swagger
  * components:
