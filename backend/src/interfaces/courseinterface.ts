@@ -1,5 +1,5 @@
 export interface courseInterface {
-  id?: string;
+  id?: number;
   title: string;
   description: Text;
   content_type?: "text" | "video" | "image" | "mixed";

@@ -25,4 +25,6 @@ CourseRoutes.get("/descending_retrival", CourseController_1.CourseRetrivalBasing
 CourseRoutes.get("/descending_retrival_category/:category", CourseController_1.CourseRetrievalByCategoryAndUserCount);
 CourseRoutes.get("/rating_retrival/:id", CourseController_1.RatingRetrieval);
 CourseRoutes.post("/rating_update/:id", CourseController_1.ratingUpdate);
+CourseRoutes.post("/module_adding", CourseController_1.addingModule);
+CourseRoutes.post("/lesson_adding", CourseController_1.LessonAdding);
 exports.default = CourseRoutes;

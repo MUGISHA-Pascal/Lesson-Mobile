@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  addingModule,
   BookMarkHandling,
   courseAdding,
   courseDelete,
@@ -12,6 +13,7 @@ import {
   fileRetrival,
   GetCourseByCategory,
   getCourses,
+  LessonAdding,
   RatingRetrieval,
   ratingUpdate,
   userIncrement,
@@ -44,4 +46,6 @@ CourseRoutes.get(
 );
 CourseRoutes.get("/rating_retrival/:id", RatingRetrieval);
 CourseRoutes.post("/rating_update/:id", ratingUpdate);
+CourseRoutes.post("/module_adding", addingModule);
+CourseRoutes.post("/lesson_adding", LessonAdding);
 export default CourseRoutes;

@@ -3,7 +3,7 @@ import postgresConnectionSequelize from "../config/postgres";
 import { courseInterface } from "../interfaces/courseinterface";
 
 class CourseInt extends Model<courseInterface> implements courseInterface {
-  public id!: string;
+  public id!: number;
   public title!: string;
   public description!: Text;
   public content_type!: "text" | "video" | "image" | "mixed";

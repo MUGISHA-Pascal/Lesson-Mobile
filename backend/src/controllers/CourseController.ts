@@ -5,6 +5,9 @@ import fs from "fs";
 import path from "path";
 import CourseTaken from "../models/CourseTaken";
 import BookMark from "../models/BookMark";
+import Module from "../models/module";
+import { lessonInterface } from "../interfaces/lessonInterface";
+import Lesson from "../models/Lesson";
 /**
  * @swagger
  * tags:
@@ -691,6 +694,54 @@ export const RatingRetrieval = async (req: Request, res: Response) => {
       message: "An error occurred while fetching the course ratings.",
     });
     return;
+  }
+};
+export const addingModule = async (req: Request, res: Response) => {
+  try {
+    const { moduleNumber, courseId } = req.body;
+    const courseChecking = await Course.findOne({ where: { id: courseId } });
+    if (!courseChecking) {
+      res.status(404).json({ message: "course not found" });
+      return;
+    }
+    const savedModule = await Module.create({ moduleNumber, courseId });
+    if (!savedModule) {
+      res.status(500).json({ message: "the module is not saved" });
+      return;
+    }
+    res.status(201).json({ savedModule, message: "module is saved" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "an error occured when adding the module",
+    });
+    return;
+  }
+};
+export const LessonAdding = async (req: Request, res: Response) => {
+  try {
+    //lessons must be an array of sub lessons for a given module
+    const { moduleId, lessons } = req.body;
+    const moduleCheck = await Module.findOne({ where: { id: moduleId } });
+    if (!moduleCheck) {
+      res.status(404).json({ message: "module not found" });
+    }
+    await Promise.all(
+      lessons.map((lesson: lessonInterface) =>
+        Lesson.create({
+          image: lesson.image,
+          content: lesson.content,
+          moduleId,
+        })
+      )
+    );
+    res.status(201).json({ message: "lessons added successively" });
+    return;
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ message: "error while saving lessons for a module" });
   }
 };
 /**

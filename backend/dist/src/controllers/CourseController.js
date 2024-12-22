@@ -12,13 +12,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RatingRetrieval = exports.ratingUpdate = exports.CourseRetrievalByCategoryAndUserCount = exports.CourseRetrivalBasingOnUserCount = exports.userIncrement = exports.BookMarkHandling = exports.courseTakenHandling = exports.courseimageRetrival = exports.courseprofileUploadController = exports.GetCourseByCategory = exports.fileRetrival = exports.CourseFileAdding = exports.courseDelete = exports.courseUpdate = exports.getCourses = exports.courseAdding = void 0;
+exports.LessonAdding = exports.addingModule = exports.RatingRetrieval = exports.ratingUpdate = exports.CourseRetrievalByCategoryAndUserCount = exports.CourseRetrivalBasingOnUserCount = exports.userIncrement = exports.BookMarkHandling = exports.courseTakenHandling = exports.courseimageRetrival = exports.courseprofileUploadController = exports.GetCourseByCategory = exports.fileRetrival = exports.CourseFileAdding = exports.courseDelete = exports.courseUpdate = exports.getCourses = exports.courseAdding = void 0;
 const User_1 = __importDefault(require("../models/User"));
 const Courses_1 = __importDefault(require("../models/Courses"));
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const CourseTaken_1 = __importDefault(require("../models/CourseTaken"));
 const BookMark_1 = __importDefault(require("../models/BookMark"));
+const module_1 = __importDefault(require("../models/module"));
+const Lesson_1 = __importDefault(require("../models/Lesson"));
 /**
  * @swagger
  * tags:
@@ -670,6 +672,54 @@ const RatingRetrieval = (req, res) => __awaiter(void 0, void 0, void 0, function
     }
 });
 exports.RatingRetrieval = RatingRetrieval;
+const addingModule = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { moduleNumber, courseId } = req.body;
+        const courseChecking = yield Courses_1.default.findOne({ where: { id: courseId } });
+        if (!courseChecking) {
+            res.status(404).json({ message: "course not found" });
+            return;
+        }
+        const savedModule = yield module_1.default.create({ moduleNumber, courseId });
+        if (!savedModule) {
+            res.status(500).json({ message: "the module is not saved" });
+            return;
+        }
+        res.status(201).json({ savedModule, message: "module is saved" });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: "an error occured when adding the module",
+        });
+        return;
+    }
+});
+exports.addingModule = addingModule;
+const LessonAdding = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        //lessons must be an array of sub lessons for a given module
+        const { moduleId, lessons } = req.body;
+        const moduleCheck = yield module_1.default.findOne({ where: { id: moduleId } });
+        if (!moduleCheck) {
+            res.status(404).json({ message: "module not found" });
+        }
+        yield Promise.all(lessons.map((lesson) => Lesson_1.default.create({
+            image: lesson.image,
+            content: lesson.content,
+            moduleId,
+        })));
+        res.status(201).json({ message: "lessons added successively" });
+        return;
+    }
+    catch (error) {
+        console.log(error);
+        res
+            .status(500)
+            .json({ message: "error while saving lessons for a module" });
+    }
+});
+exports.LessonAdding = LessonAdding;
 /**
  * @openapi
  * /courses/add_file:
