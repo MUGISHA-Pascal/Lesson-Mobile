@@ -13,6 +13,7 @@ const Lesson = postgres_1.default.define("Lesson", {
         type: sequelize_1.DataTypes.NUMBER,
         allowNull: false,
         autoIncrement: true,
+        primaryKey: true,
     },
     image: {
         type: sequelize_1.DataTypes.STRING,

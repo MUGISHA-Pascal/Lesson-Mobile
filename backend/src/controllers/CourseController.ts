@@ -8,6 +8,7 @@ import BookMark from "../models/BookMark";
 import Module from "../models/module";
 import { lessonInterface } from "../interfaces/lessonInterface";
 import Lesson from "../models/Lesson";
+import { Op } from "sequelize";
 /**
  * @swagger
  * tags:
@@ -742,6 +743,27 @@ export const LessonAdding = async (req: Request, res: Response) => {
     res
       .status(500)
       .json({ message: "error while saving lessons for a module" });
+  }
+};
+export const getCoursesByKeyword = async (req: Request, res: Response) => {
+  try {
+    const { text } = req.query;
+
+    const courses = await Course.findAll({
+      where: {
+        title: {
+          [Op.iLike]: `%${text}%`, // Wildcard search
+        },
+      },
+    });
+
+    if (courses.length > 0) {
+      res.status(200).json({ courses });
+    } else {
+      res.status(200).send({ courses });
+    }
+  } catch (error) {
+    res.status(500).send({ message: "An error occurred" });
   }
 };
 /**

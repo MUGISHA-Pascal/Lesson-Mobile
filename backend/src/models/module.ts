@@ -16,6 +16,7 @@ const Module = postgresConnectionSequelize.define<ModuleInt>(
       type: DataTypes.NUMBER,
       allowNull: false,
       autoIncrement: true,
+      primaryKey: true,
     },
     moduleNumber: {
       type: DataTypes.NUMBER,

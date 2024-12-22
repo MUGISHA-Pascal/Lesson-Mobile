@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LessonAdding = exports.addingModule = exports.RatingRetrieval = exports.ratingUpdate = exports.CourseRetrievalByCategoryAndUserCount = exports.CourseRetrivalBasingOnUserCount = exports.userIncrement = exports.BookMarkHandling = exports.courseTakenHandling = exports.courseimageRetrival = exports.courseprofileUploadController = exports.GetCourseByCategory = exports.fileRetrival = exports.CourseFileAdding = exports.courseDelete = exports.courseUpdate = exports.getCourses = exports.courseAdding = void 0;
+exports.getCoursesByKeyword = exports.LessonAdding = exports.addingModule = exports.RatingRetrieval = exports.ratingUpdate = exports.CourseRetrievalByCategoryAndUserCount = exports.CourseRetrivalBasingOnUserCount = exports.userIncrement = exports.BookMarkHandling = exports.courseTakenHandling = exports.courseimageRetrival = exports.courseprofileUploadController = exports.GetCourseByCategory = exports.fileRetrival = exports.CourseFileAdding = exports.courseDelete = exports.courseUpdate = exports.getCourses = exports.courseAdding = void 0;
 const User_1 = __importDefault(require("../models/User"));
 const Courses_1 = __importDefault(require("../models/Courses"));
 const fs_1 = __importDefault(require("fs"));
@@ -21,6 +21,7 @@ const CourseTaken_1 = __importDefault(require("../models/CourseTaken"));
 const BookMark_1 = __importDefault(require("../models/BookMark"));
 const module_1 = __importDefault(require("../models/module"));
 const Lesson_1 = __importDefault(require("../models/Lesson"));
+const sequelize_1 = require("sequelize");
 /**
  * @swagger
  * tags:
@@ -720,6 +721,28 @@ const LessonAdding = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.LessonAdding = LessonAdding;
+const getCoursesByKeyword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { text } = req.query;
+        const courses = yield Courses_1.default.findAll({
+            where: {
+                title: {
+                    [sequelize_1.Op.iLike]: `%${text}%`, // Wildcard search
+                },
+            },
+        });
+        if (courses.length > 0) {
+            res.status(200).json({ courses });
+        }
+        else {
+            res.status(200).send({ courses });
+        }
+    }
+    catch (error) {
+        res.status(500).send({ message: "An error occurred" });
+    }
+});
+exports.getCoursesByKeyword = getCoursesByKeyword;
 /**
  * @openapi
  * /courses/add_file:

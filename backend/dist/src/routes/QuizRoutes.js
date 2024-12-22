@@ -7,5 +7,5 @@ QuizRoutes.post("/add/:userId", QuizController_1.quizAdding);
 QuizRoutes.get("/:course_id", QuizController_1.getQuiz);
 QuizRoutes.put("/update/:userId", QuizController_1.quizUpdate);
 QuizRoutes.delete("/delete/:quizId", QuizController_1.quizDelete);
-QuizRoutes.post("/answers_handling", QuizController_1.questionAnswersHandling);
+// QuizRoutes.post("/answers_handling", questionAnswersHandling);
 exports.default = QuizRoutes;

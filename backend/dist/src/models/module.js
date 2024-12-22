@@ -13,6 +13,7 @@ const Module = postgres_1.default.define("Module", {
         type: sequelize_1.DataTypes.NUMBER,
         allowNull: false,
         autoIncrement: true,
+        primaryKey: true,
     },
     moduleNumber: {
         type: sequelize_1.DataTypes.NUMBER,

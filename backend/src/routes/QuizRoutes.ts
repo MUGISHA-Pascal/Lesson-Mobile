@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
   getQuiz,
-  questionAnswersHandling,
+  // questionAnswersHandling,
   quizAdding,
   quizDelete,
   quizUpdate,
@@ -12,5 +12,5 @@ QuizRoutes.post("/add/:userId", quizAdding);
 QuizRoutes.get("/:course_id", getQuiz);
 QuizRoutes.put("/update/:userId", quizUpdate);
 QuizRoutes.delete("/delete/:quizId", quizDelete);
-QuizRoutes.post("/answers_handling", questionAnswersHandling);
+// QuizRoutes.post("/answers_handling", questionAnswersHandling);
 export default QuizRoutes;

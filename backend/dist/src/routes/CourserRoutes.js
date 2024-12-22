@@ -16,6 +16,7 @@ CourseRoutes.delete("/delete/:userId", CourseController_1.courseDelete);
 CourseRoutes.get("/file/:fileName", CourseController_1.fileRetrival);
 CourseRoutes.post("/add_file", CourseUpload_1.default.single("file"), CourseController_2.CourseFileAdding);
 CourseRoutes.get("/get_courses/:category", CourseController_1.GetCourseByCategory);
+CourseRoutes.get("/search", CourseController_1.getCoursesByKeyword);
 CourseRoutes.put("/upload_profile/:id", profile_1.default.single("ProfilePicture"), CourseController_1.courseprofileUploadController);
 CourseRoutes.get("/image/:ImageName", CourseController_1.courseimageRetrival);
 CourseRoutes.put("/course_taken_handle/:userId", CourseController_1.courseTakenHandling);

@@ -13,6 +13,7 @@ import {
   fileRetrival,
   GetCourseByCategory,
   getCourses,
+  getCoursesByKeyword,
   LessonAdding,
   RatingRetrieval,
   ratingUpdate,
@@ -30,6 +31,7 @@ CourseRoutes.delete("/delete/:userId", courseDelete);
 CourseRoutes.get("/file/:fileName", fileRetrival);
 CourseRoutes.post("/add_file", CourseUpload.single("file"), CourseFileAdding);
 CourseRoutes.get("/get_courses/:category", GetCourseByCategory);
+CourseRoutes.get("/search", getCoursesByKeyword);
 CourseRoutes.put(
   "/upload_profile/:id",
   upload.single("ProfilePicture"),

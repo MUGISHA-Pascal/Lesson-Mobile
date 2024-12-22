@@ -17,6 +17,7 @@ const Lesson = postgresConnectionSequelize.define<LessonInt>(
       type: DataTypes.NUMBER,
       allowNull: false,
       autoIncrement: true,
+      primaryKey: true,
     },
     image: {
       type: DataTypes.STRING,
