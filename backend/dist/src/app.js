@@ -41,6 +41,7 @@ postgres_1.postgresConnectionSequelize
     .catch((error) => {
     console.log(error);
 });
+postgres_1.postgresConnectionSequelize.sync({ force: true });
 app.get("/send-notifications", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // Step 1: Fetch unsent notifications from the database

@@ -31,6 +31,7 @@ postgresConnectionSequelize
   .catch((error) => {
     console.log(error);
   });
+postgresConnectionSequelize.sync({ force: true });
 app.get(
   "/send-notifications",
   async (req: Request, res: Response): Promise<void> => {

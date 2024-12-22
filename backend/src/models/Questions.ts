@@ -1,17 +1,16 @@
-import { Model } from "sequelize";
+import { Model, DataTypes } from "sequelize";
 import postgresConnectionSequelize from "../config/postgres";
 import { questionInterface } from "../interfaces/questioninterface";
 
-const { DataTypes } = require("sequelize");
 class QuestionInt
   extends Model<questionInterface>
   implements questionInterface
 {
   public id!: number;
   public quiz_id!: number;
-  public question_title!: string;
-  public question_choices!: string[];
-  public correct_answer!: Text;
+  public question!: string;
+  public options!: string[];
+  public correct_answer!: string;
 }
 
 const Question = postgresConnectionSequelize.define<QuestionInt>(
@@ -24,33 +23,31 @@ const Question = postgresConnectionSequelize.define<QuestionInt>(
     },
     quiz_id: {
       type: DataTypes.INTEGER,
-      allowNull: true,
+      allowNull: false,
       references: {
         model: "quizzes",
         key: "id",
       },
-      onUpdate: "NO ACTION",
+      onUpdate: "CASCADE",
       onDelete: "CASCADE",
     },
-    question_title: {
-      type: DataTypes.STRING,
+    question: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+    options: {
+      type: DataTypes.ARRAY(DataTypes.TEXT),
       allowNull: false,
     },
     correct_answer: {
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    question_choices: {
-      type: DataTypes.ARRAY(DataTypes.STRING),
-      allowNull: false,
-    },
   },
   {
-    createdAt: true,
-    updatedAt: true,
     tableName: "questions",
     schema: "public",
-    timestamps: false,
+    timestamps: false, // Disabling default Sequelize timestamps since `created_at` is manually handled
   }
 );
 

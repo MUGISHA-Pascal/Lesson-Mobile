@@ -3,12 +3,12 @@ import {
   getQuestions,
   questionAdding,
   questionDelete,
-  questionUpdate,
+  // questionUpdate,
 } from "../controllers/QuestionController";
 
 const questionRoutes = Router();
 questionRoutes.post("/add/:userId", questionAdding);
 questionRoutes.get("/:quiz_id", getQuestions);
-questionRoutes.put("/update/:userId", questionUpdate);
+// questionRoutes.put("/update/:userId", questionUpdate);
 questionRoutes.delete("/delete/:questionId", questionDelete);
 export default questionRoutes;

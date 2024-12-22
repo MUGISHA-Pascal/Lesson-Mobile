@@ -12,9 +12,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.questionDelete = exports.questionUpdate = exports.getQuestions = exports.questionAdding = void 0;
+exports.questionDelete = exports.getQuestions = exports.uploadMiddleware = exports.questionAdding = void 0;
 const User_1 = __importDefault(require("../models/User"));
 const Questions_1 = __importDefault(require("../models/Questions"));
+const Quiz_1 = __importDefault(require("../models/Quiz"));
+const multer_1 = __importDefault(require("multer"));
+const fs_1 = __importDefault(require("fs"));
+const path_1 = __importDefault(require("path"));
 /**
  * @swagger
  * tags:
@@ -68,31 +72,67 @@ const Questions_1 = __importDefault(require("../models/Questions"));
  *       500:
  *         description: Server error
  */
+const storage = multer_1.default.diskStorage({
+    destination: (req, file, cb) => {
+        const uploadPath = path_1.default.join(__dirname, "../uploads");
+        if (!fs_1.default.existsSync(uploadPath)) {
+            fs_1.default.mkdirSync(uploadPath, { recursive: true });
+        }
+        cb(null, uploadPath);
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+        cb(null, `${uniqueSuffix}${path_1.default.extname(file.originalname)}`);
+    },
+});
 const questionAdding = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { userId } = req.params;
-        const { quiz_id, question_title, question_choices, correct_answer } = req.body;
-        const userEligible = yield User_1.default.findOne({ where: { id: userId } });
-        if ((userEligible === null || userEligible === void 0 ? void 0 : userEligible.role) === "sub_admin" || "admin") {
-            const question = yield Questions_1.default.create({
+        const { questions } = req.body;
+        const files = req.files; // Cast `req.files` to the expected type
+        if (!Array.isArray(questions) || questions.length === 0) {
+            res.status(400).json({ message: "Invalid questions data" });
+        }
+        const createdQuestions = [];
+        for (const questionData of questions) {
+            const { question, options, correct_answer, quiz_id } = questionData;
+            // Validate the quiz existence
+            const quizExists = yield Quiz_1.default.findOne({ where: { id: quiz_id } });
+            if (!quizExists) {
+                res
+                    .status(404)
+                    .json({ message: `Quiz with ID ${quiz_id} does not exist` });
+            }
+            // Map options: replace file options with saved file paths
+            const processedOptions = options.map((option, index) => {
+                if (typeof option === "object" && option.fileIndex !== undefined) {
+                    const file = files[option.fileIndex];
+                    if (file) {
+                        return `/uploads/${file.filename}`; // Replace with the file path
+                    }
+                }
+                return option; // Keep text options as-is
+            });
+            // Save the question in the database
+            const newQuestion = yield Questions_1.default.create({
                 quiz_id,
-                question_title,
-                question_choices,
+                question,
+                options: processedOptions,
                 correct_answer,
             });
-            res
-                .status(200)
-                .json({ message: "question added successfully", question });
+            createdQuestions.push(newQuestion);
         }
-        else {
-            res.json({ message: "you are not elligible to add question" });
-        }
+        res.status(200).json({
+            message: "Questions added successfully",
+            questions: createdQuestions,
+        });
     }
     catch (error) {
-        console.log(error);
+        console.error("Error in questionAdding:", error);
+        res.status(500).json({ message: "Internal Server Error", error });
     }
 });
 exports.questionAdding = questionAdding;
+exports.uploadMiddleware = (0, multer_1.default)({ storage }).array("options"); // Expecting multiple files in the `options` field
 /**
  * @swagger
  * /questions/:
@@ -193,26 +233,32 @@ exports.getQuestions = getQuestions;
  *       500:
  *         description: Server error
  */
-const questionUpdate = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { userId } = req.params;
-        const { quiz_id, question_title, question_choices, correct_answer, questionId, } = req.body;
-        const userEligible = yield User_1.default.findOne({ where: { id: userId } });
-        if ((userEligible === null || userEligible === void 0 ? void 0 : userEligible.role) === "sub_admin" || "admin") {
-            const updatedQuestion = yield Questions_1.default.update({ question_choices, correct_answer, question_title }, { where: { id: questionId, quiz_id } });
-            res
-                .status(200)
-                .json({ message: "question updated successfully", updatedQuestion });
-        }
-        else {
-            res.json({ message: "you are not elligible to update feedback" });
-        }
-    }
-    catch (error) {
-        console.log(error);
-    }
-});
-exports.questionUpdate = questionUpdate;
+// export const questionUpdate = async (req: Request, res: Response) => {
+//   try {
+//     const { userId } = req.params;
+//     const {
+//       quiz_id,
+//       question_title,
+//       question_choices,
+//       correct_answer,
+//       questionId,
+//     } = req.body;
+//     const userEligible = await User.findOne({ where: { id: userId } });
+//     if (userEligible?.role === "sub_admin" || "admin") {
+//       const updatedQuestion = await Question.update(
+//         { question_choices, correct_answer, question_title },
+//         { where: { id: questionId, quiz_id } }
+//       );
+//       res
+//         .status(200)
+//         .json({ message: "question updated successfully", updatedQuestion });
+//     } else {
+//       res.json({ message: "you are not elligible to update feedback" });
+//     }
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
 /**
  * @swagger
  * /questions/delete/{questionId}:
