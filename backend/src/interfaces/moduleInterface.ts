@@ -1,5 +1,5 @@
 export interface moduleInterface {
   id?: number;
-  moduleNumber: number;
+  module: string;
   courseId: number;
 }

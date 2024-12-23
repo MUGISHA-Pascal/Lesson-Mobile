@@ -536,6 +536,19 @@ export const BookMarkHandling = async (req: Request, res: Response) => {
     return;
   }
 };
+
+export const getQuiz = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const ress = await Module.findByPk(id);
+    if (ress) {
+      res.status(200).json({ ress });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
 export const userIncrement = async (req: Request, res: Response) => {
   const { courseId } = req.params;
 
@@ -694,13 +707,13 @@ export const RatingRetrieval = async (req: Request, res: Response) => {
 };
 export const addingModule = async (req: Request, res: Response) => {
   try {
-    const { moduleNumber, courseId } = req.body;
+    const { module, courseId } = req.body;
     const courseChecking = await Course.findOne({ where: { id: courseId } });
     if (!courseChecking) {
       res.status(404).json({ message: "course not found" });
       return;
     }
-    const savedModule = await Module.create({ moduleNumber, courseId });
+    const savedModule = await Module.create({ module, courseId });
     if (!savedModule) {
       res.status(500).json({ message: "the module is not saved" });
       return;

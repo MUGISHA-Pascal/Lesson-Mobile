@@ -80,9 +80,10 @@ export const questionAdding = async (req: Request, res: Response) => {
 
     if (!Array.isArray(questions) || questions.length === 0) {
       res.status(400).json({ message: "Invalid questions data" });
+      return;
     }
 
-    const createdQuestions = [];
+    const createdQuestions: any[] = [];
 
     for (const questionData of questions) {
       const { question, options, correct_answer, quiz_id } = questionData;
@@ -93,6 +94,7 @@ export const questionAdding = async (req: Request, res: Response) => {
         res
           .status(404)
           .json({ message: `Quiz with ID ${quiz_id} does not exist` });
+        return;
       }
 
       // Map options: replace file options with saved file paths
@@ -121,9 +123,11 @@ export const questionAdding = async (req: Request, res: Response) => {
       message: "Questions added successfully",
       questions: createdQuestions,
     });
+    return;
   } catch (error) {
     console.error("Error in questionAdding:", error);
     res.status(500).json({ message: "Internal Server Error", error });
+    return;
   }
 };
 

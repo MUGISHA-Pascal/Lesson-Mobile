@@ -15,8 +15,8 @@ const Module = postgres_1.default.define("Module", {
         autoIncrement: true,
         primaryKey: true,
     },
-    moduleNumber: {
-        type: sequelize_1.DataTypes.INTEGER,
+    module: {
+        type: sequelize_1.DataTypes.TEXT,
         allowNull: false,
     },
     courseId: {

@@ -5,7 +5,7 @@ import Course from "./Courses";
 
 class ModuleInt extends Model<moduleInterface> implements moduleInterface {
   public id!: number;
-  public moduleNumber!: number;
+  public module!: string;
   public courseId!: number;
 }
 const Module = postgresConnectionSequelize.define<ModuleInt>(
@@ -18,8 +18,8 @@ const Module = postgresConnectionSequelize.define<ModuleInt>(
       autoIncrement: true,
       primaryKey: true,
     },
-    moduleNumber: {
-      type: DataTypes.INTEGER,
+    module: {
+      type: DataTypes.TEXT,
       allowNull: false,
     },
     courseId: {

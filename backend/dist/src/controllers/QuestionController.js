@@ -91,6 +91,7 @@ const questionAdding = (req, res) => __awaiter(void 0, void 0, void 0, function*
         const files = req.files; // Cast `req.files` to the expected type
         if (!Array.isArray(questions) || questions.length === 0) {
             res.status(400).json({ message: "Invalid questions data" });
+            return;
         }
         const createdQuestions = [];
         for (const questionData of questions) {
@@ -101,6 +102,7 @@ const questionAdding = (req, res) => __awaiter(void 0, void 0, void 0, function*
                 res
                     .status(404)
                     .json({ message: `Quiz with ID ${quiz_id} does not exist` });
+                return;
             }
             // Map options: replace file options with saved file paths
             const processedOptions = options.map((option, index) => {
@@ -125,10 +127,12 @@ const questionAdding = (req, res) => __awaiter(void 0, void 0, void 0, function*
             message: "Questions added successfully",
             questions: createdQuestions,
         });
+        return;
     }
     catch (error) {
         console.error("Error in questionAdding:", error);
         res.status(500).json({ message: "Internal Server Error", error });
+        return;
     }
 });
 exports.questionAdding = questionAdding;

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCoursesByKeyword = exports.LessonAdding = exports.addingModule = exports.RatingRetrieval = exports.ratingUpdate = exports.CourseRetrievalByCategoryAndUserCount = exports.CourseRetrivalBasingOnUserCount = exports.userIncrement = exports.BookMarkHandling = exports.courseTakenHandling = exports.courseimageRetrival = exports.courseprofileUploadController = exports.GetCourseByCategory = exports.fileRetrival = exports.CourseFileAdding = exports.courseDelete = exports.courseUpdate = exports.getCourses = exports.courseAdding = void 0;
+exports.getCoursesByKeyword = exports.LessonAdding = exports.addingModule = exports.RatingRetrieval = exports.ratingUpdate = exports.CourseRetrievalByCategoryAndUserCount = exports.CourseRetrivalBasingOnUserCount = exports.userIncrement = exports.getQuiz = exports.BookMarkHandling = exports.courseTakenHandling = exports.courseimageRetrival = exports.courseprofileUploadController = exports.GetCourseByCategory = exports.fileRetrival = exports.CourseFileAdding = exports.courseDelete = exports.courseUpdate = exports.getCourses = exports.courseAdding = void 0;
 const User_1 = __importDefault(require("../models/User"));
 const Courses_1 = __importDefault(require("../models/Courses"));
 const fs_1 = __importDefault(require("fs"));
@@ -536,6 +536,19 @@ const BookMarkHandling = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.BookMarkHandling = BookMarkHandling;
+const getQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    try {
+        const ress = yield module_1.default.findByPk(id);
+        if (ress) {
+            res.status(200).json({ ress });
+        }
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
+exports.getQuiz = getQuiz;
 const userIncrement = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { courseId } = req.params;
     try {
@@ -678,13 +691,13 @@ const RatingRetrieval = (req, res) => __awaiter(void 0, void 0, void 0, function
 exports.RatingRetrieval = RatingRetrieval;
 const addingModule = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { moduleNumber, courseId } = req.body;
+        const { module, courseId } = req.body;
         const courseChecking = yield Courses_1.default.findOne({ where: { id: courseId } });
         if (!courseChecking) {
             res.status(404).json({ message: "course not found" });
             return;
         }
-        const savedModule = yield module_1.default.create({ moduleNumber, courseId });
+        const savedModule = yield module_1.default.create({ module, courseId });
         if (!savedModule) {
             res.status(500).json({ message: "the module is not saved" });
             return;

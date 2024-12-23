@@ -14,6 +14,7 @@ import {
   GetCourseByCategory,
   getCourses,
   getCoursesByKeyword,
+  getQuiz,
   LessonAdding,
   RatingRetrieval,
   ratingUpdate,
@@ -52,6 +53,8 @@ CourseRoutes.get(
 );
 CourseRoutes.get("/rating_retrival/:id", RatingRetrieval);
 CourseRoutes.post("/rating_update/:id", ratingUpdate);
-CourseRoutes.post("/module_adding", addingModule);
+CourseRoutes.post("/module", addingModule);
+CourseRoutes.get("/fetch/:id", getQuiz);
+
 CourseRoutes.post("/lesson_adding", LessonAdding);
 export default CourseRoutes;
