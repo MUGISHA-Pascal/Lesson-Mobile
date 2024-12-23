@@ -370,36 +370,39 @@ exports.courseDelete = courseDelete;
  */
 const CourseFileAdding = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { userId, courseTitle, category, moduleNumber, courseDescription, contentType, } = req.body;
+        const { userId, courseTitle, category, courseDescription } = req.body;
+        console.log(userId);
         const user = yield User_1.default.findOne({ where: { id: userId } });
         console.log(user === null || user === void 0 ? void 0 : user.role);
         if (!user || user.role !== "admin") {
             res.status(403).json({ message: "You are not allowed to add courses" });
             return;
         }
-        if (!req.file) {
-            console.log("please include file");
-            res.status(400).json({ message: "No file uploaded" });
-            return;
-        }
-        if (req.file) {
-            yield Courses_1.default.create({
-                module: moduleNumber,
-                title: courseTitle,
-                description: courseDescription,
-                content_type: contentType,
-                category,
-                created_by: userId,
-                file: req.file.filename,
-            });
-        }
+        // if (!req.file) {
+        //   console.log("please include file");
+        //   res.status(400).json({ message: "No file uploaded" });
+        //   return;
+        // }
+        // if (req.file) {
+        yield Courses_1.default.create({
+            // module: moduleNumber,
+            title: courseTitle,
+            description: courseDescription,
+            // content_type: contentType,
+            category,
+            created_by: userId,
+            // file: req.file.filename,
+        });
+        // }
+        console.log("working");
         res.status(200).json({
             message: "Course uploaded successfully",
-            file: req.file,
+            // file: req.file,
         });
         return;
     }
     catch (error) {
+        console.log(error);
         res.json({ message: error });
         return;
     }

@@ -3,7 +3,6 @@ import {
   getQuestions,
   questionAdding,
   questionDelete,
-  uploadMiddleware,
   // questionUpdate,
 } from "../controllers/QuestionController";
 import QuestionUpload from "../middlewares/QuestionUpload";
@@ -11,7 +10,7 @@ import QuestionUpload from "../middlewares/QuestionUpload";
 const questionRoutes = Router();
 questionRoutes.post(
   "/add/:userId",
-  QuestionUpload.array("options"),
+  // QuestionUpload.single("file"),
   questionAdding
 );
 questionRoutes.get("/:quiz_id", getQuestions);

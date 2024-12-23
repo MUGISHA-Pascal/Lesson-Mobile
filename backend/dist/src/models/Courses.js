@@ -23,7 +23,7 @@ const Course = postgres_1.default.define("Course", {
     },
     content_type: {
         type: sequelize_1.DataTypes.STRING(20),
-        allowNull: false,
+        allowNull: true,
         validate: {
             isIn: [["text", "video", "image"]],
         },

@@ -35,7 +35,7 @@ const Course = postgresConnectionSequelize.define<CourseInt>(
     },
     content_type: {
       type: DataTypes.STRING(20),
-      allowNull: false,
+      allowNull: true,
       validate: {
         isIn: [["text", "video", "image"]],
       },

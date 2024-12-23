@@ -365,45 +365,40 @@ export const courseDelete = async (req: Request, res: Response) => {
  */
 export const CourseFileAdding = async (req: Request, res: Response) => {
   try {
-    const {
-      userId,
-      courseTitle,
-      category,
-      moduleNumber,
-      courseDescription,
-      contentType,
-    } = req.body;
-
+    const { userId, courseTitle, category, courseDescription } = req.body;
+    console.log(userId);
     const user = await User.findOne({ where: { id: userId } });
-
     console.log(user?.role);
     if (!user || user.role !== "admin") {
       res.status(403).json({ message: "You are not allowed to add courses" });
       return;
     }
 
-    if (!req.file) {
-      console.log("please include file");
-      res.status(400).json({ message: "No file uploaded" });
-      return;
-    }
-    if (req.file) {
-      await Course.create({
-        module: moduleNumber,
-        title: courseTitle,
-        description: courseDescription,
-        content_type: contentType,
-        category,
-        created_by: userId,
-        file: req.file.filename,
-      });
-    }
+    // if (!req.file) {
+    //   console.log("please include file");
+    //   res.status(400).json({ message: "No file uploaded" });
+    //   return;
+    // }
+    // if (req.file) {
+    await Course.create({
+      // module: moduleNumber,
+      title: courseTitle,
+      description: courseDescription,
+      // content_type: contentType,
+      category,
+      created_by: userId,
+      // file: req.file.filename,
+    });
+    // }
+    console.log("working");
+
     res.status(200).json({
       message: "Course uploaded successfully",
-      file: req.file,
+      // file: req.file,
     });
     return;
   } catch (error) {
+    console.log(error);
     res.json({ message: error });
     return;
   }
