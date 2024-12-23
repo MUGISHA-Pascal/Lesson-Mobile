@@ -10,7 +10,7 @@ class LessonInt extends sequelize_1.Model {
 }
 const Lesson = postgres_1.default.define("Lesson", {
     id: {
-        type: sequelize_1.DataTypes.NUMBER,
+        type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
@@ -23,7 +23,7 @@ const Lesson = postgres_1.default.define("Lesson", {
         type: sequelize_1.DataTypes.STRING,
     },
     moduleId: {
-        type: sequelize_1.DataTypes.NUMBER,
+        type: sequelize_1.DataTypes.INTEGER,
         references: {
             key: "id",
             model: module_1.default,

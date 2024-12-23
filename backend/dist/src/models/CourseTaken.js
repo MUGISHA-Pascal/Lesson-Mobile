@@ -9,7 +9,7 @@ class CourseTakenInt extends sequelize_1.Model {
 }
 const CourseTaken = postgres_1.default.define("CourseTaken", {
     userId: {
-        type: sequelize_1.DataTypes.NUMBER,
+        type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
     },
     courseIds: {

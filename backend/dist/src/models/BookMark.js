@@ -9,7 +9,7 @@ class BookMarkInt extends sequelize_1.Model {
 }
 const BookMark = postgres_1.default.define("BookMark", {
     userId: {
-        type: sequelize_1.DataTypes.NUMBER,
+        type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
     },
     courseIds: {

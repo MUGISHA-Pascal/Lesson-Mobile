@@ -64,19 +64,19 @@ const Course = postgresConnectionSequelize.define<CourseInt>(
       allowNull: true,
     },
     module: {
-      type: DataTypes.ARRAY(DataTypes.NUMBER),
+      type: DataTypes.ARRAY(DataTypes.INTEGER),
       allowNull: true,
     },
     userCount: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
     ratingAverage: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
     ratingCount: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
   },

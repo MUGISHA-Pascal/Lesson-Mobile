@@ -73,7 +73,7 @@ const profileUploadController = (req, res) => __awaiter(void 0, void 0, void 0, 
         const user = yield User_1.default.findOne({ where: { id } });
         if (user) {
             if (req.file) {
-                user.profilePicture = req.file.path;
+                user.profilepicture = req.file.path;
                 user.save();
                 res.json({ message: "user image uploaded successfully", user });
             }
@@ -246,7 +246,7 @@ exports.imageRetrival = imageRetrival;
 const fillProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { fullname, nickname, email, gender, phone_number, id } = req.body;
-        const userUpdated = yield User_1.default.update({ username: fullname, nickName: nickname, gender, phone_number, email }, { where: { id } });
+        const userUpdated = yield User_1.default.update({ username: fullname, nickname: nickname, gender, phone_number, email }, { where: { id } });
         console.log(userUpdated);
         res.status(201).json({ user: userUpdated });
     }
@@ -277,7 +277,7 @@ exports.updateSetting = updateSetting;
 const fill = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { fullname, nickname, number, id } = req.body;
-        const userUpdated = yield User_1.default.update({ username: fullname, nickName: nickname, phone_number: number }, { where: { id } });
+        const userUpdated = yield User_1.default.update({ username: fullname, nickname: nickname, phone_number: number }, { where: { id } });
         console.log(userUpdated);
         res.status(201).json({ user: userUpdated });
     }
@@ -316,7 +316,7 @@ const AddPin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 description: "Hari impamvu wiyandikishije, tangira nonaha maze wige ibirebanye nibinyabziga",
                 receiver: id,
                 sender: "app",
-                sentdate: dateAndHours
+                sentdate: dateAndHours,
             });
         }
         catch (error) {
@@ -327,7 +327,7 @@ const AddPin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             description: "Amategeko app ni application igufasha kwiga ibyerekanye nibinyabiziga byose kubuntu kandi muburyo bworoshye kandi bunoze",
             receiver: id,
             sender: "app",
-            sentdate: dateAndHours
+            sentdate: dateAndHours,
         });
         res.status(201).json({ user: userUpdated });
     }
@@ -372,8 +372,8 @@ const GetNotificationById = (req, res) => __awaiter(void 0, void 0, void 0, func
         const { id } = req.params;
         const user = yield Notification_1.default.findAll({
             where: {
-                receiver: id
-            }
+                receiver: id,
+            },
         });
         if (user) {
             res.status(201).json({ user });
@@ -394,7 +394,7 @@ const getNumber_of_unseen_messages = (req, res) => __awaiter(void 0, void 0, voi
         const unseenCount = yield Notification_1.default.count({
             where: {
                 receiver: id,
-                seen: "No"
+                seen: "No",
             },
         });
         if (unseenCount) {
@@ -414,8 +414,8 @@ const getMentors = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         // const { id } = req.params;
         const user = yield User_1.default.findAll({
             where: {
-                role: "sub_admin"
-            }
+                role: "sub_admin",
+            },
         });
         if (user) {
             res.status(201).json({ user });

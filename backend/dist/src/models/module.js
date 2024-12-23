@@ -10,17 +10,17 @@ class ModuleInt extends sequelize_1.Model {
 }
 const Module = postgres_1.default.define("Module", {
     id: {
-        type: sequelize_1.DataTypes.NUMBER,
+        type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
     },
     moduleNumber: {
-        type: sequelize_1.DataTypes.NUMBER,
+        type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
     },
     courseId: {
-        type: sequelize_1.DataTypes.NUMBER,
+        type: sequelize_1.DataTypes.INTEGER,
         references: {
             key: "id",
             model: Courses_1.default,

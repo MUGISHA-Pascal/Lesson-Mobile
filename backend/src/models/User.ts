@@ -11,12 +11,12 @@ class UserInt extends Model<userInterface> {
   public phone_number!: string;
   public password_hash!: string;
   public role!: "lesson_seeker" | "admin" | "sub_admin";
-  public profilePicture!: string;
-  public nickName!: string;
+  public profilepicture!: string;
+  public nickname!: string;
   public gender!: string;
   public pin!: number;
   public verified!: string;
-  public activeStatus!: string;
+  public activestatus!: string;
   public special_offers!: boolean;
   public sound!: boolean;
   public vibrate!: boolean;
@@ -26,7 +26,7 @@ class UserInt extends Model<userInterface> {
   public app_update!: boolean;
   public new_service_available!: boolean;
   public new_tips_available!: boolean;
-  public device_token!: string; 
+  public device_token!: string;
 }
 
 const User = postgresConnectionSequelize.define<UserInt>(
@@ -63,11 +63,11 @@ const User = postgresConnectionSequelize.define<UserInt>(
         isIn: [["lesson_seeker", "admin", "sub_admin"]],
       },
     },
-    profilePicture: {
+    profilepicture: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    nickName: {
+    nickname: {
       type: DataTypes.STRING,
       allowNull: true,
     },
@@ -84,10 +84,10 @@ const User = postgresConnectionSequelize.define<UserInt>(
       allowNull: true,
       defaultValue: "NO",
     },
-    activeStatus: {
+    activestatus: {
       type: DataTypes.STRING,
-      allowNull: true,
       defaultValue: "No",
+      allowNull: true,
     },
     special_offers: {
       type: DataTypes.BOOLEAN,
@@ -134,12 +134,10 @@ const User = postgresConnectionSequelize.define<UserInt>(
       allowNull: false,
       defaultValue: false,
     },
-    device_token:{
-      type:DataTypes.STRING,
-      allowNull:true
-
-    }
-    
+    device_token: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     createdAt: true,

@@ -141,10 +141,10 @@ const handlingCharts = (io) => {
                             : "No messages yet",
                         timestamp: lastMessage ? lastMessage.date : null,
                         username: user.username,
-                        profilePicture: user.profilePicture,
+                        profilePicture: user.profilepicture,
                         sender: lastMessage ? lastMessage.sender : null,
                         receiver: lastMessage ? lastMessage.receiver : null,
-                        status: user.activeStatus,
+                        status: user.activestatus,
                     };
                 })));
                 io.to(socket.id).emit("last_message_update", usersWithLastMessage);

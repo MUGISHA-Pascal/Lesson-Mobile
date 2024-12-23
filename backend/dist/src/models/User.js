@@ -50,11 +50,11 @@ const User = postgres_1.default.define("User", {
             isIn: [["lesson_seeker", "admin", "sub_admin"]],
         },
     },
-    profilePicture: {
+    profilepicture: {
         type: DataTypes.STRING,
         allowNull: true,
     },
-    nickName: {
+    nickname: {
         type: DataTypes.STRING,
         allowNull: true,
     },
@@ -71,10 +71,10 @@ const User = postgres_1.default.define("User", {
         allowNull: true,
         defaultValue: "NO",
     },
-    activeStatus: {
+    activestatus: {
         type: DataTypes.STRING,
-        allowNull: true,
         defaultValue: "No",
+        allowNull: true,
     },
     special_offers: {
         type: DataTypes.BOOLEAN,
@@ -123,8 +123,8 @@ const User = postgres_1.default.define("User", {
     },
     device_token: {
         type: DataTypes.STRING,
-        allowNull: true
-    }
+        allowNull: true,
+    },
 }, {
     createdAt: true,
     updatedAt: true,

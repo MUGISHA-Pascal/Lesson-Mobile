@@ -145,10 +145,10 @@ export const handlingCharts = (io: Server) => {
                 : "No messages yet",
               timestamp: lastMessage ? lastMessage.date : null,
               username: user.username,
-              profilePicture: user.profilePicture,
+              profilePicture: user.profilepicture,
               sender: lastMessage ? lastMessage.sender : null,
               receiver: lastMessage ? lastMessage.receiver : null,
-              status: user.activeStatus,
+              status: user.activestatus,
             };
           })
         );
