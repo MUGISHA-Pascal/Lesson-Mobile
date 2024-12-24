@@ -5,6 +5,7 @@ import Quiz from "../models/Quiz";
 import multer from "multer";
 import fs from "fs";
 import path from "path";
+import { console } from "inspector";
 /**
  * @swagger
  * tags:
@@ -59,26 +60,13 @@ import path from "path";
  *       500:
  *         description: Server error
  */
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = path.join(__dirname, "../uploads");
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true });
-    }
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, `${uniqueSuffix}${path.extname(file.originalname)}`);
-  },
-});
 
-export const questionAdding = async (req: Request, res: Response) => {
+export const QuestionAdding = async (req: Request, res: Response) => {
   try {
     const { questions } = req.body;
-    const files = req.files as Express.Multer.File[]; // Cast `req.files` to the expected type
+    console.log(questions);
 
-    if (!Array.isArray(questions) || questions.length === 0) {
+    if (!questions || questions.length === 0) {
       res.status(400).json({ message: "Invalid questions data" });
       return;
     }
@@ -86,10 +74,12 @@ export const questionAdding = async (req: Request, res: Response) => {
     const createdQuestions: any[] = [];
 
     for (const questionData of questions) {
+      // Destructure fields from questionData
       const { question, options, correct_answer, quiz_id } = questionData;
 
-      // Validate the quiz existence
-      const quizExists = await Quiz.findOne({ where: { id: quiz_id } });
+      // Validate quiz existence
+      const quizExists = await Quiz.findOne({ where: { id: Number(quiz_id) } });
+
       if (!quizExists) {
         res
           .status(404)
@@ -97,25 +87,15 @@ export const questionAdding = async (req: Request, res: Response) => {
         return;
       }
 
-      // Map options: replace file options with saved file paths
-      const processedOptions = options.map((option: any, index: number) => {
-        if (typeof option === "object" && option.fileIndex !== undefined) {
-          const file = files[option.fileIndex];
-          if (file) {
-            return `/uploads/${file.filename}`; // Replace with the file path
-          }
-        }
-        return option; // Keep text options as-is
-      });
-
       // Save the question in the database
       const newQuestion = await Question.create({
         quiz_id,
         question,
-        options: processedOptions,
+        options,
         correct_answer,
       });
 
+      console.log(newQuestion);
       createdQuestions.push(newQuestion);
     }
 
@@ -125,13 +105,10 @@ export const questionAdding = async (req: Request, res: Response) => {
     });
     return;
   } catch (error) {
-    console.error("Error in questionAdding:", error);
+    console.log("Error in QuestionAdding: ", error);
     res.status(500).json({ message: "Internal Server Error", error });
-    return;
   }
 };
-
-export const uploadMiddleware = multer({ storage }).array("options"); // Expecting multiple files in the `options` field
 
 /**
  * @swagger

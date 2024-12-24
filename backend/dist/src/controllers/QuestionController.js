@@ -12,13 +12,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.questionDelete = exports.getQuestions = exports.uploadMiddleware = exports.questionAdding = void 0;
+exports.questionDelete = exports.getQuestions = exports.QuestionAdding = void 0;
 const User_1 = __importDefault(require("../models/User"));
 const Questions_1 = __importDefault(require("../models/Questions"));
 const Quiz_1 = __importDefault(require("../models/Quiz"));
-const multer_1 = __importDefault(require("multer"));
-const fs_1 = __importDefault(require("fs"));
-const path_1 = __importDefault(require("path"));
+const inspector_1 = require("inspector");
 /**
  * @swagger
  * tags:
@@ -72,55 +70,34 @@ const path_1 = __importDefault(require("path"));
  *       500:
  *         description: Server error
  */
-const storage = multer_1.default.diskStorage({
-    destination: (req, file, cb) => {
-        const uploadPath = path_1.default.join(__dirname, "../uploads");
-        if (!fs_1.default.existsSync(uploadPath)) {
-            fs_1.default.mkdirSync(uploadPath, { recursive: true });
-        }
-        cb(null, uploadPath);
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-        cb(null, `${uniqueSuffix}${path_1.default.extname(file.originalname)}`);
-    },
-});
-const questionAdding = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const QuestionAdding = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { questions } = req.body;
-        const files = req.files; // Cast `req.files` to the expected type
-        if (!Array.isArray(questions) || questions.length === 0) {
+        inspector_1.console.log(questions);
+        if (!questions || questions.length === 0) {
             res.status(400).json({ message: "Invalid questions data" });
             return;
         }
         const createdQuestions = [];
         for (const questionData of questions) {
+            // Destructure fields from questionData
             const { question, options, correct_answer, quiz_id } = questionData;
-            // Validate the quiz existence
-            const quizExists = yield Quiz_1.default.findOne({ where: { id: quiz_id } });
+            // Validate quiz existence
+            const quizExists = yield Quiz_1.default.findOne({ where: { id: Number(quiz_id) } });
             if (!quizExists) {
                 res
                     .status(404)
                     .json({ message: `Quiz with ID ${quiz_id} does not exist` });
                 return;
             }
-            // Map options: replace file options with saved file paths
-            const processedOptions = options.map((option, index) => {
-                if (typeof option === "object" && option.fileIndex !== undefined) {
-                    const file = files[option.fileIndex];
-                    if (file) {
-                        return `/uploads/${file.filename}`; // Replace with the file path
-                    }
-                }
-                return option; // Keep text options as-is
-            });
             // Save the question in the database
             const newQuestion = yield Questions_1.default.create({
                 quiz_id,
                 question,
-                options: processedOptions,
+                options,
                 correct_answer,
             });
+            inspector_1.console.log(newQuestion);
             createdQuestions.push(newQuestion);
         }
         res.status(200).json({
@@ -130,13 +107,11 @@ const questionAdding = (req, res) => __awaiter(void 0, void 0, void 0, function*
         return;
     }
     catch (error) {
-        console.error("Error in questionAdding:", error);
+        inspector_1.console.log("Error in QuestionAdding: ", error);
         res.status(500).json({ message: "Internal Server Error", error });
-        return;
     }
 });
-exports.questionAdding = questionAdding;
-exports.uploadMiddleware = (0, multer_1.default)({ storage }).array("options"); // Expecting multiple files in the `options` field
+exports.QuestionAdding = QuestionAdding;
 /**
  * @swagger
  * /questions/:
@@ -182,7 +157,7 @@ const getQuestions = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             .json({ message: "Questions found successfully", questions });
     }
     catch (error) {
-        console.log(error);
+        inspector_1.console.log(error);
     }
 });
 exports.getQuestions = getQuestions;
@@ -323,7 +298,7 @@ const questionDelete = (req, res) => __awaiter(void 0, void 0, void 0, function*
         }
     }
     catch (error) {
-        console.log(error);
+        inspector_1.console.log(error);
     }
 });
 exports.questionDelete = questionDelete;

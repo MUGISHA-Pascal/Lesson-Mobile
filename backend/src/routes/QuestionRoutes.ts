@@ -1,18 +1,13 @@
 import { Router } from "express";
 import {
   getQuestions,
-  questionAdding,
+  QuestionAdding,
   questionDelete,
   // questionUpdate,
 } from "../controllers/QuestionController";
-import QuestionUpload from "../middlewares/QuestionUpload";
 
 const questionRoutes = Router();
-questionRoutes.post(
-  "/add/:userId",
-  // QuestionUpload.single("file"),
-  questionAdding
-);
+questionRoutes.post("/add/:userId", QuestionAdding);
 questionRoutes.get("/:quiz_id", getQuestions);
 // questionRoutes.put("/update/:userId", questionUpdate);
 questionRoutes.delete("/delete/:questionId", questionDelete);
