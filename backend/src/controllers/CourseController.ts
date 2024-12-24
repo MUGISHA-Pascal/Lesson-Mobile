@@ -89,11 +89,15 @@ export const courseAdding = async (req: Request, res: Response) => {
         created_by: Number(userId),
       });
       res.status(200).json({ message: "course created successfully", course });
+      return;
     } else {
       res.json({ message: "you are not allowed adding courses" });
+      return;
     }
   } catch (error) {
     console.log(error);
+    res.status(500).json({ message: "Internal Server Error" });
+    return;
   }
 };
 /**
@@ -147,6 +151,16 @@ export const getCourses = async (req: Request, res: Response) => {
     }
   } catch (error) {
     console.log(error);
+  }
+};
+export const UsergetCourses = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const courses = await Course.findAll({ where: { created_by: userId } });
+    res.status(200).json({ message: "all courses", courses });
+  } catch (error) {
+    console.log(error);
+    return;
   }
 };
 /**
@@ -314,6 +328,7 @@ export const courseDelete = async (req: Request, res: Response) => {
     }
   } catch (error) {
     console.log(error);
+    res.status(500).json({ message: "Internal Server Error" });
     return;
   }
 };
@@ -566,6 +581,7 @@ export const getQuiz = async (req: Request, res: Response) => {
     }
   } catch (error) {
     console.log(error);
+    res.status(500).json({ message: "Internal Server Error" });
     return;
   }
 };

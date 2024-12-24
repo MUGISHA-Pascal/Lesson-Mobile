@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCoursesByKeyword = exports.LessonAdding = exports.addingModule = exports.RatingRetrieval = exports.ratingUpdate = exports.CourseRetrievalByCategoryAndUserCount = exports.CourseRetrivalBasingOnUserCount = exports.userIncrement = exports.getQuiz = exports.BookMarkHandling = exports.courseTakenHandling = exports.courseimageRetrival = exports.courseprofileUploadController = exports.GetCourseByCategory = exports.fileRetrival = exports.CourseFileAdding = exports.courseDelete = exports.courseUpdate = exports.getCourses = exports.courseAdding = void 0;
+exports.getCoursesByKeyword = exports.LessonAdding = exports.addingModule = exports.RatingRetrieval = exports.ratingUpdate = exports.CourseRetrievalByCategoryAndUserCount = exports.CourseRetrivalBasingOnUserCount = exports.userIncrement = exports.getQuiz = exports.BookMarkHandling = exports.courseTakenHandling = exports.courseimageRetrival = exports.courseprofileUploadController = exports.GetCourseByCategory = exports.fileRetrival = exports.CourseFileAdding = exports.courseDelete = exports.courseUpdate = exports.UsergetCourses = exports.getCourses = exports.courseAdding = void 0;
 const User_1 = __importDefault(require("../models/User"));
 const Courses_1 = __importDefault(require("../models/Courses"));
 const fs_1 = __importDefault(require("fs"));
@@ -95,13 +95,17 @@ const courseAdding = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 created_by: Number(userId),
             });
             res.status(200).json({ message: "course created successfully", course });
+            return;
         }
         else {
             res.json({ message: "you are not allowed adding courses" });
+            return;
         }
     }
     catch (error) {
         console.log(error);
+        res.status(500).json({ message: "Internal Server Error" });
+        return;
     }
 });
 exports.courseAdding = courseAdding;
@@ -161,6 +165,18 @@ const getCourses = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.getCourses = getCourses;
+const UsergetCourses = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { userId } = req.params;
+        const courses = yield Courses_1.default.findAll({ where: { created_by: userId } });
+        res.status(200).json({ message: "all courses", courses });
+    }
+    catch (error) {
+        console.log(error);
+        return;
+    }
+});
+exports.UsergetCourses = UsergetCourses;
 /**
  * @swagger
  * /courses/update/{userId}:
@@ -318,6 +334,7 @@ const courseDelete = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
     catch (error) {
         console.log(error);
+        res.status(500).json({ message: "Internal Server Error" });
         return;
     }
 });
@@ -566,6 +583,7 @@ const getQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
     catch (error) {
         console.log(error);
+        res.status(500).json({ message: "Internal Server Error" });
         return;
     }
 });

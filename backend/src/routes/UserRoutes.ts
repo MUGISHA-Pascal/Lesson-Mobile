@@ -23,11 +23,7 @@ UserRoutes.put(
   upload.single("ProfilePicture"),
   profileUploadController
 );
-UserRoutes.put(
-  "/update/:id",
-  upload.single("ProfilePicture"),
-  profileUpdateController
-);
+UserRoutes.put("/update/:id", upload.single("file"), profileUpdateController);
 UserRoutes.delete("/admin/delete-user/:userId", AdminUserDelete);
 UserRoutes.get("/image/:ImageName", imageRetrival);
 UserRoutes.put("/fill_profile", fillProfile);

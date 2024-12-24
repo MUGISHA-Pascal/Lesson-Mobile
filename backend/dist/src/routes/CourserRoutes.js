@@ -11,6 +11,7 @@ const profile_1 = __importDefault(require("../middlewares/profile"));
 const CourseRoutes = (0, express_1.Router)();
 CourseRoutes.post("/add/:userId", CourseController_1.courseAdding);
 CourseRoutes.get("/", CourseController_1.getCourses);
+CourseRoutes.get("/userCourses/:userId", CourseController_1.UsergetCourses);
 CourseRoutes.put("/update/:userId", CourseController_1.courseUpdate);
 CourseRoutes.delete("/delete/:courseId/:userId", CourseController_1.courseDelete);
 CourseRoutes.get("/file/:fileName", CourseController_1.fileRetrival);

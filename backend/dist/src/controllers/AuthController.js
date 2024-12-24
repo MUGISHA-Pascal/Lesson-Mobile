@@ -212,6 +212,7 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             password_hash,
             role,
             verified: "NO",
+            profilepicture: "default.png",
         });
         const token = createToken(user.id);
         res.cookie("jwt", token, { maxAge: maxAge * 1000 });
@@ -222,6 +223,7 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 username: user.username,
                 email: user.email,
                 role: user.role,
+                profilepicture: user.profilepicture,
             },
         });
     }
@@ -247,6 +249,7 @@ const signup_Not_admin = (req, res) => __awaiter(void 0, void 0, void 0, functio
                 password_hash: "",
                 role: "lesson_seeker",
                 verified: "NO",
+                profilepicture: "default.png",
             });
             // Generate a token
             const token = createToken(user.id);
@@ -301,6 +304,7 @@ const WebLoginController = (req, res) => __awaiter(void 0, void 0, void 0, funct
                             email: user.email,
                             role: user.role,
                             phone_number: user.phone_number,
+                            profilepicture: user.profilepicture,
                         },
                     });
                 }

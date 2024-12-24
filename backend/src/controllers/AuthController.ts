@@ -199,6 +199,7 @@ export const signup = async (req: Request, res: Response) => {
       password_hash,
       role,
       verified: "NO",
+      profilepicture: "default.png",
     });
     const token = createToken(user.id);
     res.cookie("jwt", token, { maxAge: maxAge * 1000 });
@@ -209,6 +210,7 @@ export const signup = async (req: Request, res: Response) => {
         username: user.username,
         email: user.email,
         role: user.role,
+        profilepicture: user.profilepicture,
       },
     });
   } catch (error) {
@@ -234,6 +236,7 @@ export const signup_Not_admin = async (req: Request, res: Response) => {
         password_hash: "",
         role: "lesson_seeker",
         verified: "NO",
+        profilepicture: "default.png",
       });
 
       // Generate a token
@@ -291,6 +294,7 @@ export const WebLoginController = async (req: Request, res: Response) => {
               email: user.email,
               role: user.role,
               phone_number: user.phone_number,
+              profilepicture: user.profilepicture,
             },
           });
         }

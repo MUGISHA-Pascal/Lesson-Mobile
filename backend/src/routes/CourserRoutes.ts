@@ -18,6 +18,7 @@ import {
   LessonAdding,
   RatingRetrieval,
   ratingUpdate,
+  UsergetCourses,
   userIncrement,
 } from "../controllers/CourseController";
 import { CourseFileAdding } from "../controllers/CourseController";
@@ -27,6 +28,7 @@ import upload from "../middlewares/profile";
 const CourseRoutes = Router();
 CourseRoutes.post("/add/:userId", courseAdding);
 CourseRoutes.get("/", getCourses);
+CourseRoutes.get("/userCourses/:userId", UsergetCourses);
 CourseRoutes.put("/update/:userId", courseUpdate);
 CourseRoutes.delete("/delete/:courseId/:userId", courseDelete);
 CourseRoutes.get("/file/:fileName", fileRetrival);
