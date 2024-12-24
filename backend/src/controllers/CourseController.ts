@@ -278,16 +278,16 @@ export const courseUpdate = async (req: Request, res: Response) => {
 export const courseDelete = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const { courseId } = req.body;
+    const { courseId } = req.params;
     const user = await User.findOne({ where: { id: userId } });
     if (user?.role === "admin") {
       const CourseToDelete = await Course.findOne({ where: { id: courseId } });
       let filePath;
-      if (CourseToDelete) {
+      if (CourseToDelete?.profile_image) {
         filePath = path.join(
           __dirname,
           "../../uploads/courses",
-          CourseToDelete.file
+          CourseToDelete.profile_image
         );
       }
       if (filePath) {
@@ -295,9 +295,11 @@ export const courseDelete = async (req: Request, res: Response) => {
           if (error) {
             console.log(error);
             res.status(500).json({ message: "error while deleting file " });
+            return;
           } else {
             console.log("file successively deleted");
             res.status(201).json({ message: "file successively deleted" });
+            return;
           }
         });
       }
@@ -305,11 +307,14 @@ export const courseDelete = async (req: Request, res: Response) => {
       res
         .status(200)
         .json({ message: "course deleted successfully", deletedCourse });
+      return;
     } else {
       res.json({ message: "you are not allowed deleting courses" });
+      return;
     }
   } catch (error) {
     console.log(error);
+    return;
   }
 };
 /**
@@ -373,23 +378,25 @@ export const CourseFileAdding = async (req: Request, res: Response) => {
       res.status(403).json({ message: "You are not allowed to add courses" });
       return;
     }
-
-    // if (!req.file) {
-    //   console.log("please include file");
-    //   res.status(400).json({ message: "No file uploaded" });
-    //   return;
-    // }
-    // if (req.file) {
-    await Course.create({
-      // module: moduleNumber,
-      title: courseTitle,
-      description: courseDescription,
-      // content_type: contentType,
-      category,
-      created_by: userId,
-      // file: req.file.filename,
-    });
-    // }
+    let imagename;
+    if (!req.file) {
+      imagename = "course.png";
+      console.log("please include file");
+      res.status(400).json({ message: "No file uploaded" });
+      return;
+    }
+    imagename = req.file.filename;
+    if (req.file) {
+      await Course.create({
+        // module: moduleNumber,
+        title: courseTitle,
+        description: courseDescription,
+        // content_type: contentType,
+        category,
+        created_by: userId,
+        profile_image: imagename,
+      });
+    }
     console.log("working");
 
     res.status(200).json({
@@ -409,8 +416,10 @@ export const fileRetrival = async (req: Request, res: Response) => {
   fs.access(filePath, fs.constants.F_OK, (err) => {
     if (err) {
       res.status(404).json({ error: "file not found" });
+      return;
     }
     res.sendFile(filePath);
+    return;
   });
 };
 export const GetCourseByCategory = async (req: Request, res: Response) => {
@@ -418,9 +427,11 @@ export const GetCourseByCategory = async (req: Request, res: Response) => {
     const { category } = req.params;
     const courses = await Course.findAll({ where: { category } });
     res.status(201).json({ courses });
+    return;
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: error });
+    return;
   }
 };
 export const courseprofileUploadController = async (
@@ -435,25 +446,32 @@ export const courseprofileUploadController = async (
         course.profile_image = req.file.path;
         course.save();
         res.json({ message: "course image uploaded successfully", course });
+        return;
       } else {
         res.status(400).json({ message: "no course file uploaded" });
+        return;
       }
     } else {
       res.status(404).json({ message: "course not found" });
+      return;
     }
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "server error" });
+    return;
   }
 };
 export const courseimageRetrival = async (req: Request, res: Response) => {
   const { ImageName } = req.params;
-  const filePath = path.join(__dirname, "../../uploads", ImageName);
+  const filePath = path.join(__dirname, "../../uploads/courses", ImageName);
+  console.log(ImageName);
   fs.access(filePath, fs.constants.F_OK, (err) => {
     if (err) {
       res.status(404).json({ error: "Image not found" });
+      return;
     }
     res.sendFile(filePath);
+    return;
   });
 };
 export const courseTakenHandling = async (req: Request, res: Response) => {
@@ -544,9 +562,11 @@ export const getQuiz = async (req: Request, res: Response) => {
     const ress = await Module.findByPk(id);
     if (ress) {
       res.status(200).json({ ress });
+      return;
     }
   } catch (error) {
     console.log(error);
+    return;
   }
 };
 export const userIncrement = async (req: Request, res: Response) => {
@@ -734,6 +754,7 @@ export const LessonAdding = async (req: Request, res: Response) => {
     const moduleCheck = await Module.findOne({ where: { id: moduleId } });
     if (!moduleCheck) {
       res.status(404).json({ message: "module not found" });
+      return;
     }
     await Promise.all(
       lessons.map((lesson: lessonInterface) =>
@@ -751,6 +772,7 @@ export const LessonAdding = async (req: Request, res: Response) => {
     res
       .status(500)
       .json({ message: "error while saving lessons for a module" });
+    return;
   }
 };
 export const getCoursesByKeyword = async (req: Request, res: Response) => {
@@ -767,11 +789,14 @@ export const getCoursesByKeyword = async (req: Request, res: Response) => {
 
     if (courses.length > 0) {
       res.status(200).json({ courses });
+      return;
     } else {
       res.status(200).send({ courses });
+      return;
     }
   } catch (error) {
     res.status(500).send({ message: "An error occurred" });
+    return;
   }
 };
 /**

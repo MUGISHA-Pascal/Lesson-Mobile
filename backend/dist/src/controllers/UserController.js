@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMentors = exports.getNumber_of_unseen_messages = exports.GetNotificationById = exports.GetUserById = exports.PushNotification = exports.AddPin = exports.updateSeenNotification = exports.fill = exports.updateSetting = exports.fillProfile = exports.imageRetrival = exports.AdminUserDelete = exports.profileUploadController = void 0;
+exports.getMentors = exports.getNumber_of_unseen_messages = exports.GetNotificationById = exports.GetUserById = exports.PushNotification = exports.AddPin = exports.updateSeenNotification = exports.fill = exports.updateSetting = exports.fillProfile = exports.imageRetrival = exports.AdminUserDelete = exports.profileUpdateController = exports.profileUploadController = void 0;
 const User_1 = __importDefault(require("../models/User"));
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
@@ -91,6 +91,32 @@ const profileUploadController = (req, res) => __awaiter(void 0, void 0, void 0, 
     }
 });
 exports.profileUploadController = profileUploadController;
+const profileUpdateController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const { username, phone_number, email } = req.body;
+        const user = yield User_1.default.findOne({ where: { id } });
+        if (user) {
+            if (req.file) {
+                user.profilepicture = req.file.path;
+                user.save();
+                user.update({ username, phone_number, email, profilepicture: req.file.path }, { where: { id } });
+                res.json({ message: "user image uploaded successfully", user });
+            }
+            else {
+                res.status(400).json({ message: "no image file uploaded" });
+            }
+        }
+        else {
+            res.status(404).json({ message: "user not found" });
+        }
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "server error" });
+    }
+});
+exports.profileUpdateController = profileUpdateController;
 // using multer-s3 and aws to handle the upload folder
 /**
  * @swagger

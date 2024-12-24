@@ -173,21 +173,33 @@ export const getQuiz = async (req: Request, res: Response) => {
  *       500:
  *         description: Server error
  */
+export const getQuizes = async (req: Request, res: Response) => {
+  try {
+    const quizzes = await Quiz.findAll();
+    res.status(200).json({ message: "quiz found successfully", quizzes });
+  } catch (error) {
+    console.log(error);
+  }
+};
 export const quizUpdate = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const { course_id, title, max_attempts, quizId } = req.body;
+    const { title, description, max_attempts, quizId } = req.body;
+    console.log(title, description, max_attempts, quizId);
     const userEligible = await User.findOne({ where: { id: userId } });
     if (userEligible?.role === "sub_admin" || "admin") {
       const updatedQuiz = await Quiz.update(
-        { title, max_attempts },
-        { where: { id: quizId, course_id } }
+        { title, max_attempts, description },
+        { where: { id: quizId } }
       );
+      console.log("working");
       res
         .status(200)
         .json({ message: "quiz updated successfully", updatedQuiz });
+      return;
     } else {
       res.json({ message: "you are not elligible to update quiz" });
+      return;
     }
   } catch (error) {
     console.log(error);
@@ -237,8 +249,8 @@ export const quizUpdate = async (req: Request, res: Response) => {
  */
 export const quizDelete = async (req: Request, res: Response) => {
   try {
-    const { quizId } = req.params;
-    const { userId } = req.body;
+    const { quizId, userId } = req.params;
+
     const userEligible = await User.findOne({ where: { id: userId } });
     if (userEligible?.role === "sub_admin" || "admin") {
       const deletedQuiz = await Quiz.destroy({

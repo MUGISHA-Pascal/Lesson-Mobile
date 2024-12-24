@@ -300,6 +300,7 @@ const WebLoginController = (req, res) => __awaiter(void 0, void 0, void 0, funct
                             username: user.username,
                             email: user.email,
                             role: user.role,
+                            phone_number: user.phone_number,
                         },
                     });
                 }

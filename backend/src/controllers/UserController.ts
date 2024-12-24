@@ -74,6 +74,31 @@ export const profileUploadController = async (req: Request, res: Response) => {
     res.status(500).json({ message: "server error" });
   }
 };
+export const profileUpdateController = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { username, phone_number, email } = req.body;
+    const user = await User.findOne({ where: { id } });
+    if (user) {
+      if (req.file) {
+        user.profilepicture = req.file.path;
+        user.save();
+        user.update(
+          { username, phone_number, email, profilepicture: req.file.path },
+          { where: { id } }
+        );
+        res.json({ message: "user image uploaded successfully", user });
+      } else {
+        res.status(400).json({ message: "no image file uploaded" });
+      }
+    } else {
+      res.status(404).json({ message: "user not found" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "server error" });
+  }
+};
 // using multer-s3 and aws to handle the upload folder
 /**
  * @swagger

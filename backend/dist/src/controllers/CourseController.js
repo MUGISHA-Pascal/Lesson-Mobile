@@ -283,23 +283,25 @@ exports.courseUpdate = courseUpdate;
 const courseDelete = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userId } = req.params;
-        const { courseId } = req.body;
+        const { courseId } = req.params;
         const user = yield User_1.default.findOne({ where: { id: userId } });
         if ((user === null || user === void 0 ? void 0 : user.role) === "admin") {
             const CourseToDelete = yield Courses_1.default.findOne({ where: { id: courseId } });
             let filePath;
-            if (CourseToDelete) {
-                filePath = path_1.default.join(__dirname, "../../uploads/courses", CourseToDelete.file);
+            if (CourseToDelete === null || CourseToDelete === void 0 ? void 0 : CourseToDelete.profile_image) {
+                filePath = path_1.default.join(__dirname, "../../uploads/courses", CourseToDelete.profile_image);
             }
             if (filePath) {
                 fs_1.default.rm(filePath, (error) => {
                     if (error) {
                         console.log(error);
                         res.status(500).json({ message: "error while deleting file " });
+                        return;
                     }
                     else {
                         console.log("file successively deleted");
                         res.status(201).json({ message: "file successively deleted" });
+                        return;
                     }
                 });
             }
@@ -307,13 +309,16 @@ const courseDelete = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             res
                 .status(200)
                 .json({ message: "course deleted successfully", deletedCourse });
+            return;
         }
         else {
             res.json({ message: "you are not allowed deleting courses" });
+            return;
         }
     }
     catch (error) {
         console.log(error);
+        return;
     }
 });
 exports.courseDelete = courseDelete;
@@ -378,22 +383,25 @@ const CourseFileAdding = (req, res) => __awaiter(void 0, void 0, void 0, functio
             res.status(403).json({ message: "You are not allowed to add courses" });
             return;
         }
-        // if (!req.file) {
-        //   console.log("please include file");
-        //   res.status(400).json({ message: "No file uploaded" });
-        //   return;
-        // }
-        // if (req.file) {
-        yield Courses_1.default.create({
-            // module: moduleNumber,
-            title: courseTitle,
-            description: courseDescription,
-            // content_type: contentType,
-            category,
-            created_by: userId,
-            // file: req.file.filename,
-        });
-        // }
+        let imagename;
+        if (!req.file) {
+            imagename = "course.png";
+            console.log("please include file");
+            res.status(400).json({ message: "No file uploaded" });
+            return;
+        }
+        imagename = req.file.filename;
+        if (req.file) {
+            yield Courses_1.default.create({
+                // module: moduleNumber,
+                title: courseTitle,
+                description: courseDescription,
+                // content_type: contentType,
+                category,
+                created_by: userId,
+                profile_image: imagename,
+            });
+        }
         console.log("working");
         res.status(200).json({
             message: "Course uploaded successfully",
@@ -414,8 +422,10 @@ const fileRetrival = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     fs_1.default.access(filePath, fs_1.default.constants.F_OK, (err) => {
         if (err) {
             res.status(404).json({ error: "file not found" });
+            return;
         }
         res.sendFile(filePath);
+        return;
     });
 });
 exports.fileRetrival = fileRetrival;
@@ -424,10 +434,12 @@ const GetCourseByCategory = (req, res) => __awaiter(void 0, void 0, void 0, func
         const { category } = req.params;
         const courses = yield Courses_1.default.findAll({ where: { category } });
         res.status(201).json({ courses });
+        return;
     }
     catch (error) {
         console.log(error);
         res.status(500).json({ message: error });
+        return;
     }
 });
 exports.GetCourseByCategory = GetCourseByCategory;
@@ -440,29 +452,36 @@ const courseprofileUploadController = (req, res) => __awaiter(void 0, void 0, vo
                 course.profile_image = req.file.path;
                 course.save();
                 res.json({ message: "course image uploaded successfully", course });
+                return;
             }
             else {
                 res.status(400).json({ message: "no course file uploaded" });
+                return;
             }
         }
         else {
             res.status(404).json({ message: "course not found" });
+            return;
         }
     }
     catch (error) {
         console.log(error);
         res.status(500).json({ message: "server error" });
+        return;
     }
 });
 exports.courseprofileUploadController = courseprofileUploadController;
 const courseimageRetrival = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { ImageName } = req.params;
-    const filePath = path_1.default.join(__dirname, "../../uploads", ImageName);
+    const filePath = path_1.default.join(__dirname, "../../uploads/courses", ImageName);
+    console.log(ImageName);
     fs_1.default.access(filePath, fs_1.default.constants.F_OK, (err) => {
         if (err) {
             res.status(404).json({ error: "Image not found" });
+            return;
         }
         res.sendFile(filePath);
+        return;
     });
 });
 exports.courseimageRetrival = courseimageRetrival;
@@ -542,10 +561,12 @@ const getQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const ress = yield module_1.default.findByPk(id);
         if (ress) {
             res.status(200).json({ ress });
+            return;
         }
     }
     catch (error) {
         console.log(error);
+        return;
     }
 });
 exports.getQuiz = getQuiz;
@@ -720,6 +741,7 @@ const LessonAdding = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const moduleCheck = yield module_1.default.findOne({ where: { id: moduleId } });
         if (!moduleCheck) {
             res.status(404).json({ message: "module not found" });
+            return;
         }
         yield Promise.all(lessons.map((lesson) => Lesson_1.default.create({
             image: lesson.image,
@@ -734,6 +756,7 @@ const LessonAdding = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         res
             .status(500)
             .json({ message: "error while saving lessons for a module" });
+        return;
     }
 });
 exports.LessonAdding = LessonAdding;
@@ -749,13 +772,16 @@ const getCoursesByKeyword = (req, res) => __awaiter(void 0, void 0, void 0, func
         });
         if (courses.length > 0) {
             res.status(200).json({ courses });
+            return;
         }
         else {
             res.status(200).send({ courses });
+            return;
         }
     }
     catch (error) {
         res.status(500).send({ message: "An error occurred" });
+        return;
     }
 });
 exports.getCoursesByKeyword = getCoursesByKeyword;

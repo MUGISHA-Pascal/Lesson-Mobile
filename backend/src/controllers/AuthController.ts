@@ -290,6 +290,7 @@ export const WebLoginController = async (req: Request, res: Response) => {
               username: user.username,
               email: user.email,
               role: user.role,
+              phone_number: user.phone_number,
             },
           });
         }

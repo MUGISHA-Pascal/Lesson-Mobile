@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.quizDelete = exports.quizUpdate = exports.getQuiz = exports.quizAdding = void 0;
+exports.quizDelete = exports.quizUpdate = exports.getQuizes = exports.getQuiz = exports.quizAdding = void 0;
 const User_1 = __importDefault(require("../models/User"));
 const Quiz_1 = __importDefault(require("../models/Quiz"));
 /**
@@ -190,19 +190,33 @@ exports.getQuiz = getQuiz;
  *       500:
  *         description: Server error
  */
+const getQuizes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const quizzes = yield Quiz_1.default.findAll();
+        res.status(200).json({ message: "quiz found successfully", quizzes });
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
+exports.getQuizes = getQuizes;
 const quizUpdate = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userId } = req.params;
-        const { course_id, title, max_attempts, quizId } = req.body;
+        const { title, description, max_attempts, quizId } = req.body;
+        console.log(title, description, max_attempts, quizId);
         const userEligible = yield User_1.default.findOne({ where: { id: userId } });
         if ((userEligible === null || userEligible === void 0 ? void 0 : userEligible.role) === "sub_admin" || "admin") {
-            const updatedQuiz = yield Quiz_1.default.update({ title, max_attempts }, { where: { id: quizId, course_id } });
+            const updatedQuiz = yield Quiz_1.default.update({ title, max_attempts, description }, { where: { id: quizId } });
+            console.log("working");
             res
                 .status(200)
                 .json({ message: "quiz updated successfully", updatedQuiz });
+            return;
         }
         else {
             res.json({ message: "you are not elligible to update quiz" });
+            return;
         }
     }
     catch (error) {
@@ -254,8 +268,7 @@ exports.quizUpdate = quizUpdate;
  */
 const quizDelete = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { quizId } = req.params;
-        const { userId } = req.body;
+        const { quizId, userId } = req.params;
         const userEligible = yield User_1.default.findOne({ where: { id: userId } });
         if ((userEligible === null || userEligible === void 0 ? void 0 : userEligible.role) === "sub_admin" || "admin") {
             const deletedQuiz = yield Quiz_1.default.destroy({
