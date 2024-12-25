@@ -9,6 +9,8 @@ import Module from "../models/module";
 import { lessonInterface } from "../interfaces/lessonInterface";
 import Lesson from "../models/Lesson";
 import { Op } from "sequelize";
+import Quiz from "../models/Quiz";
+import Question from "../models/Questions";
 /**
  * @swagger
  * tags:
@@ -815,6 +817,43 @@ export const getCoursesByKeyword = async (req: Request, res: Response) => {
     return;
   }
 };
+export const tripleRelation = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+
+    let courses: any[] = [];
+    let quizzes: any[] = [];
+    let questions: any[] = [];
+
+    const CoursesRetr = await Course.findAll({
+      where: { created_by: userId },
+    });
+
+    courses = CoursesRetr;
+
+    for (const course of courses) {
+      const QuizRetr = await Quiz.findAll({
+        where: { course_id: course.id },
+      });
+
+      for (const quiz of QuizRetr) {
+        quizzes.push(quiz);
+
+        const QuestRetr = await Question.findAll({
+          where: { quiz_id: quiz.id },
+        });
+
+        questions.push(...QuestRetr);
+      }
+    }
+
+    res.status(200).json({ courses, quizzes, questions });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error", error });
+  }
+};
+
 /**
  * @openapi
  * /courses/add_file:

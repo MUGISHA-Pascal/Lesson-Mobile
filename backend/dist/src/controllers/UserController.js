@@ -98,9 +98,12 @@ const profileUpdateController = (req, res) => __awaiter(void 0, void 0, void 0, 
         const user = yield User_1.default.findOne({ where: { id } });
         if (user) {
             if (req.file) {
-                user.profilepicture = req.file.path;
-                user.save();
-                user.update({ username, phone_number, email, profilepicture: req.file.path }, { where: { id } });
+                user.update({
+                    username,
+                    phone_number,
+                    email,
+                    profilepicture: req.file.filename,
+                }, { where: { id } });
                 res.json({ message: "user image uploaded successfully", user });
             }
             else {
@@ -112,7 +115,7 @@ const profileUpdateController = (req, res) => __awaiter(void 0, void 0, void 0, 
         }
     }
     catch (error) {
-        console.log(error);
+        console.log("here", error);
         res.status(500).json({ message: "server error" });
     }
 });
@@ -382,14 +385,19 @@ const GetUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const { id } = req.params;
         const user = yield User_1.default.findByPk(id);
         if (user) {
-            res.status(201).json({ user });
+            console.log("working");
+            res.json({ user });
+            return;
         }
         else {
             res.status(404).json({ message: "user not found" });
+            return;
         }
     }
     catch (error) {
         console.log(error);
+        res.status(500).json({ message: "internal server error" });
+        return;
     }
 });
 exports.GetUserById = GetUserById;

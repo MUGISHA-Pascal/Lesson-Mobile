@@ -18,6 +18,7 @@ import {
   LessonAdding,
   RatingRetrieval,
   ratingUpdate,
+  tripleRelation,
   UsergetCourses,
   userIncrement,
 } from "../controllers/CourseController";
@@ -35,6 +36,7 @@ CourseRoutes.get("/file/:fileName", fileRetrival);
 CourseRoutes.post("/add_file", CourseUpload.single("file"), CourseFileAdding);
 CourseRoutes.get("/get_courses/:category", GetCourseByCategory);
 CourseRoutes.get("/search", getCoursesByKeyword);
+CourseRoutes.get("/triple_relation/:userId", tripleRelation);
 CourseRoutes.put(
   "/upload_profile/:id",
   upload.single("ProfilePicture"),

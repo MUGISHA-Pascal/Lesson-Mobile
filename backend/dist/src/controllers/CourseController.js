@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCoursesByKeyword = exports.LessonAdding = exports.addingModule = exports.RatingRetrieval = exports.ratingUpdate = exports.CourseRetrievalByCategoryAndUserCount = exports.CourseRetrivalBasingOnUserCount = exports.userIncrement = exports.getQuiz = exports.BookMarkHandling = exports.courseTakenHandling = exports.courseimageRetrival = exports.courseprofileUploadController = exports.GetCourseByCategory = exports.fileRetrival = exports.CourseFileAdding = exports.courseDelete = exports.courseUpdate = exports.UsergetCourses = exports.getCourses = exports.courseAdding = void 0;
+exports.tripleRelation = exports.getCoursesByKeyword = exports.LessonAdding = exports.addingModule = exports.RatingRetrieval = exports.ratingUpdate = exports.CourseRetrievalByCategoryAndUserCount = exports.CourseRetrivalBasingOnUserCount = exports.userIncrement = exports.getQuiz = exports.BookMarkHandling = exports.courseTakenHandling = exports.courseimageRetrival = exports.courseprofileUploadController = exports.GetCourseByCategory = exports.fileRetrival = exports.CourseFileAdding = exports.courseDelete = exports.courseUpdate = exports.UsergetCourses = exports.getCourses = exports.courseAdding = void 0;
 const User_1 = __importDefault(require("../models/User"));
 const Courses_1 = __importDefault(require("../models/Courses"));
 const fs_1 = __importDefault(require("fs"));
@@ -22,6 +22,8 @@ const BookMark_1 = __importDefault(require("../models/BookMark"));
 const module_1 = __importDefault(require("../models/module"));
 const Lesson_1 = __importDefault(require("../models/Lesson"));
 const sequelize_1 = require("sequelize");
+const Quiz_1 = __importDefault(require("../models/Quiz"));
+const Questions_1 = __importDefault(require("../models/Questions"));
 /**
  * @swagger
  * tags:
@@ -803,6 +805,36 @@ const getCoursesByKeyword = (req, res) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.getCoursesByKeyword = getCoursesByKeyword;
+const tripleRelation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { userId } = req.params;
+        let courses = [];
+        let quizzes = [];
+        let questions = [];
+        const CoursesRetr = yield Courses_1.default.findAll({
+            where: { created_by: userId },
+        });
+        courses = CoursesRetr;
+        for (const course of courses) {
+            const QuizRetr = yield Quiz_1.default.findAll({
+                where: { course_id: course.id },
+            });
+            for (const quiz of QuizRetr) {
+                quizzes.push(quiz);
+                const QuestRetr = yield Questions_1.default.findAll({
+                    where: { quiz_id: quiz.id },
+                });
+                questions.push(...QuestRetr);
+            }
+        }
+        res.status(200).json({ courses, quizzes, questions });
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error", error });
+    }
+});
+exports.tripleRelation = tripleRelation;
 /**
  * @openapi
  * /courses/add_file:

@@ -81,10 +81,13 @@ export const profileUpdateController = async (req: Request, res: Response) => {
     const user = await User.findOne({ where: { id } });
     if (user) {
       if (req.file) {
-        user.profilepicture = req.file.path;
-        user.save();
         user.update(
-          { username, phone_number, email, profilepicture: req.file.path },
+          {
+            username,
+            phone_number,
+            email,
+            profilepicture: req.file.filename,
+          },
           { where: { id } }
         );
         res.json({ message: "user image uploaded successfully", user });
@@ -95,7 +98,7 @@ export const profileUpdateController = async (req: Request, res: Response) => {
       res.status(404).json({ message: "user not found" });
     }
   } catch (error) {
-    console.log(error);
+    console.log("here", error);
     res.status(500).json({ message: "server error" });
   }
 };
@@ -370,12 +373,17 @@ export const GetUserById = async (req: Request, res: Response) => {
     const { id } = req.params;
     const user = await User.findByPk(id);
     if (user) {
-      res.status(201).json({ user });
+      console.log("working");
+      res.json({ user });
+      return;
     } else {
       res.status(404).json({ message: "user not found" });
+      return;
     }
   } catch (error) {
     console.log(error);
+    res.status(500).json({ message: "internal server error" });
+    return;
   }
 };
 
